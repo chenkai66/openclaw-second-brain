@@ -8,13 +8,6 @@ class SecondBrainApp {
     async init() {
         this.bindEvents();
         await this.loadContent();
-        
-        // Initialize knowledge graph after content is loaded
-        setTimeout(() => {
-            if (typeof KnowledgeGraph !== 'undefined') {
-                new KnowledgeGraph();
-            }
-        }, 1000);
     }
 
     bindEvents() {
@@ -51,9 +44,15 @@ class SecondBrainApp {
             const notes = await notesResponse.json();
             this.renderNotes(notes);
 
+            // Load research reports for research tab
+            const researchResponse = await fetch('/api/reports');
+            const research = await researchResponse.json();
+            this.renderResearch(research);
+
             // Update loading states
             document.getElementById('summary-loading').style.display = 'none';
             document.getElementById('history-loading').style.display = 'none';
+            document.getElementById('research-loading').style.display = 'none';
             
             if (notes.length === 0) {
                 document.getElementById('summary-list').innerHTML = '<div class="empty-state">No summaries available</div>';
@@ -61,10 +60,14 @@ class SecondBrainApp {
             if (logs.length === 0) {
                 document.getElementById('history-list').innerHTML = '<div class="empty-state">No history available</div>';
             }
+            if (research.length === 0) {
+                document.getElementById('research-list').innerHTML = '<div class="empty-state">No research reports available</div>';
+            }
         } catch (error) {
             console.error('Error loading content:', error);
             document.getElementById('summary-loading').textContent = 'Error loading summaries';
             document.getElementById('history-loading').textContent = 'Error loading history';
+            document.getElementById('research-loading').textContent = 'Error loading research reports';
         }
     }
 
