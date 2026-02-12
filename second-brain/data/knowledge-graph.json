@@ -1,0 +1,66 @@
+{
+  "nodes": [
+    {
+      "id": "2026-02-09-second-brain-system-development",
+      "title": "Second Brain System Development and Knowledge Management",
+      "group": "system",
+      "size": 15
+    },
+    {
+      "id": "2026-02-09-chinese-metaphysics-connections",
+      "title": "Chinese Metaphysics: Twenty-Four Solar Terms and I Ching Connections",
+      "group": "culture",
+      "size": 12
+    },
+    {
+      "id": "2026-02-10-spring-festival-movies",
+      "title": "2026 Spring Festival Movie Guide",
+      "group": "entertainment",
+      "size": 10
+    },
+    {
+      "id": "2026-02-10-embodied-intelligence-global",
+      "title": "Embodied Intelligence: Global Developments and 2026 Breakthroughs",
+      "group": "technology",
+      "size": 13
+    },
+    {
+      "id": "2026-02-11-second-brain-intelligent-sync-execution",
+      "title": "Second Brain Intelligent Sync Task Execution and System Maintenance",
+      "group": "system",
+      "size": 14
+    }
+  ],
+  "links": [
+    {
+      "source": "2026-02-11-second-brain-intelligent-sync-execution",
+      "target": "2026-02-09-second-brain-system-development",
+      "value": 5,
+      "type": "related"
+    },
+    {
+      "source": "2026-02-09-second-brain-system-development",
+      "target": "2026-02-10-embodied-intelligence-global",
+      "value": 2,
+      "type": "contextual"
+    },
+    {
+      "source": "2026-02-09-chinese-metaphysics-connections",
+      "target": "2026-02-10-spring-festival-movies",
+      "value": 1,
+      "type": "cultural"
+    },
+    {
+      "source": "2026-02-10-embodied-intelligence-global",
+      "target": "2026-02-11-second-brain-intelligent-sync-execution",
+      "value": 3,
+      "type": "technological"
+    }
+  ],
+  "metadata": {
+    "generated_at": "2026-02-12T15:02:00+08:00",
+    "total_nodes": 5,
+    "total_links": 4,
+    "version": "1.0"
+  }
+}

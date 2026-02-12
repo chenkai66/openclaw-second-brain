@@ -4,9 +4,6 @@ const fs = require('fs').promises;
 const app = express();
 const PORT = 8000;
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
-
 // Middleware to parse JSON
 app.use(express.json());
 
@@ -46,6 +43,186 @@ app.get('/api/knowledge-graph', async (req, res) => {
       edges: [],
       error: 'Failed to load knowledge graph'
     });
+  }
+});
+
+// API endpoint to get all logs
+app.get('/api/logs', async (req, res) => {
+  try {
+    const logsDir = path.join(__dirname, 'content', 'logs');
+    await ensureDirectoryExists(logsDir);
+    
+    const files = await fs.readdir(logsDir);
+    const logs = [];
+    
+    for (const file of files) {
+      if (file.endsWith('.md')) {
+        const content = await fs.readFile(path.join(logsDir, file), 'utf8');
+        const id = file.replace('.md', '');
+        logs.push({ id: id, content: content });
+      }
+    }
+    
+    res.json(logs);
+  } catch (error) {
+    console.error('Error reading logs:', error);
+    res.status(500).json({ error: 'Failed to read logs' });
+  }
+});
+
+// API endpoint to get all notes
+app.get('/api/notes', async (req, res) => {
+  try {
+    const notesDir = path.join(__dirname, 'content', 'notes');
+    await ensureDirectoryExists(notesDir);
+    
+    const files = await fs.readdir(notesDir);
+    const notes = [];
+    
+    for (const file of files) {
+      if (file.endsWith('.md')) {
+        const content = await fs.readFile(path.join(notesDir, file), 'utf8');
+        const id = file.replace('.md', '');
+        
+        // Parse frontmatter to extract rich metadata
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+        let title = id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        let summary = '';
+        let tags = [];
+        let relatedLogs = [];
+        let createdAt = id; // Use ID as date for now
+        
+        if (frontmatterMatch) {
+          const frontmatter = frontmatterMatch[1];
+          
+          const titleMatch = frontmatter.match(/title:\s*(.*)/);
+          if (titleMatch) title = titleMatch[1].trim();
+          
+          const summaryMatch = frontmatter.match(/summary:\s*"([^"]*)"/);
+          if (summaryMatch) summary = summaryMatch[1];
+          
+          const tagsMatch = frontmatter.match(/tags:\s*\[(.*?)\]/);
+          if (tagsMatch) {
+            tags = tagsMatch[1].split(',').map(t => t.trim().replace(/"/g, ''));
+          }
+          
+          const relatedLogsMatch = frontmatter.match(/related_logs:\s*\[(.*?)\]/);
+          if (relatedLogsMatch) {
+            relatedLogs = relatedLogsMatch[1].split(',').map(l => l.trim().replace(/"/g, ''));
+          }
+          
+          const createdMatch = frontmatter.match(/created:\s*(.*)/);
+          if (createdMatch) createdAt = createdMatch[1].trim();
+        }
+        
+        notes.push({ 
+          id: id,
+          title: title,
+          summary: summary,
+          tags: tags,
+          relatedLogs: relatedLogs,
+          createdAt: createdAt,
+          content: content 
+        });
+      }
+    }
+    
+    res.json(notes);
+  } catch (error) {
+    console.error('Error reading notes:', error);
+    res.status(500).json({ error: 'Failed to read notes' });
+  }
+});
+
+// API endpoint to get all reports
+app.get('/api/reports', async (req, res) => {
+  try {
+    const reportsDir = path.join(__dirname, 'content', 'reports', 'daily-research');
+    await ensureDirectoryExists(reportsDir);
+    
+    const files = await fs.readdir(reportsDir);
+    const reports = [];
+    
+    for (const file of files) {
+      if (file.endsWith('.md')) {
+        const content = await fs.readFile(path.join(reportsDir, file), 'utf8');
+        const id = file.replace('.md', '');
+        
+        // Parse frontmatter to extract metadata
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+        let title = id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        let summary = '';
+        let date = id;
+        
+        if (frontmatterMatch) {
+          const frontmatter = frontmatterMatch[1];
+          
+          const titleMatch = frontmatter.match(/title:\s*(.*)/);
+          if (titleMatch) title = titleMatch[1].trim();
+          
+          const summaryMatch = frontmatter.match(/summary:\s*"([^"]*)"/);
+          if (summaryMatch) summary = summaryMatch[1];
+          
+          const dateMatch = frontmatter.match(/date:\s*(.*)/);
+          if (dateMatch) date = dateMatch[1].trim();
+        }
+        
+        reports.push({ 
+          id: id,
+          title: title,
+          summary: summary,
+          date: date,
+          content: content 
+        });
+      }
+    }
+    
+    // Sort by date (newest first)
+    reports.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    res.json(reports);
+  } catch (error) {
+    console.error('Error reading reports:', error);
+    res.status(500).json({ error: 'Failed to read reports' });
+  }
+});
+
+// API endpoint to get a specific report
+app.get('/api/reports/:slug', async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const filePath = path.join(__dirname, 'content', 'reports', 'daily-research', `${slug}.md`);
+    const content = await fs.readFile(filePath, 'utf8');
+    
+    // Parse frontmatter
+    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    let title = slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    let summary = '';
+    let date = slug;
+    
+    if (frontmatterMatch) {
+      const frontmatter = frontmatterMatch[1];
+      
+      const titleMatch = frontmatter.match(/title:\s*(.*)/);
+      if (titleMatch) title = titleMatch[1].trim();
+      
+      const summaryMatch = frontmatter.match(/summary:\s*"([^"]*)"/);
+      if (summaryMatch) summary = summaryMatch[1];
+      
+      const dateMatch = frontmatter.match(/date:\s*(.*)/);
+      if (dateMatch) date = dateMatch[1].trim();
+    }
+    
+    res.json({ 
+      id: slug,
+      title: title,
+      summary: summary,
+      date: date,
+      content: content 
+    });
+  } catch (error) {
+    console.error('Error reading report:', error);
+    res.status(404).json({ error: 'Report not found' });
   }
 });
 
@@ -146,119 +323,6 @@ app.post('/api/tags/library', async (req, res) => {
   } catch (error) {
     console.error('Error updating tag library:', error);
     res.status(500).json({ error: 'Failed to update tag library' });
-  }
-});
-
-// API endpoint to get all logs with proper metadata
-app.get('/api/logs', async (req, res) => {
-  try {
-    const logsDir = path.join(__dirname, 'content', 'logs');
-    await ensureDirectoryExists(logsDir);
-    
-    const files = await fs.readdir(logsDir);
-    const logs = [];
-    
-    for (const file of files) {
-      if (file.endsWith('.md')) {
-        const content = await fs.readFile(path.join(logsDir, file), 'utf8');
-        const date = file.replace('.md', '');
-        
-        // Parse frontmatter to extract metadata
-        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-        let summary = '';
-        let topics = [];
-        
-        if (frontmatterMatch) {
-          const frontmatter = frontmatterMatch[1];
-          const summaryMatch = frontmatter.match(/summary:\s*"([^"]*)"/);
-          if (summaryMatch) summary = summaryMatch[1];
-          
-          const topicsMatch = frontmatter.match(/topics:\s*\[(.*?)\]/);
-          if (topicsMatch) {
-            topics = topicsMatch[1].split(',').map(t => t.trim().replace(/"/g, ''));
-          }
-        }
-        
-        logs.push({ 
-          id: date, 
-          title: date,
-          summary: summary,
-          topics: topics,
-          content: content 
-        });
-      }
-    }
-    
-    // Sort by date (newest first)
-    logs.sort((a, b) => new Date(b.id) - new Date(a.id));
-    res.json(logs);
-  } catch (error) {
-    console.error('Error reading logs:', error);
-    res.status(500).json({ error: 'Failed to read logs' });
-  }
-});
-
-// API endpoint to get all notes with rich metadata
-app.get('/api/notes', async (req, res) => {
-  try {
-    const notesDir = path.join(__dirname, 'content', 'notes');
-    await ensureDirectoryExists(notesDir);
-    
-    const files = await fs.readdir(notesDir);
-    const notes = [];
-    
-    for (const file of files) {
-      if (file.endsWith('.md')) {
-        const content = await fs.readFile(path.join(notesDir, file), 'utf8');
-        const id = file.replace('.md', '');
-        
-        // Parse frontmatter to extract rich metadata
-        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-        let title = id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        let summary = '';
-        let tags = [];
-        let relatedLogs = [];
-        let createdAt = id; // Use ID as date for now
-        
-        if (frontmatterMatch) {
-          const frontmatter = frontmatterMatch[1];
-          
-          const titleMatch = frontmatter.match(/title:\s*(.*)/);
-          if (titleMatch) title = titleMatch[1].trim();
-          
-          const summaryMatch = frontmatter.match(/summary:\s*"([^"]*)"/);
-          if (summaryMatch) summary = summaryMatch[1];
-          
-          const tagsMatch = frontmatter.match(/tags:\s*\[(.*?)\]/);
-          if (tagsMatch) {
-            tags = tagsMatch[1].split(',').map(t => t.trim().replace(/"/g, ''));
-          }
-          
-          const relatedLogsMatch = frontmatter.match(/related_logs:\s*\[(.*?)\]/);
-          if (relatedLogsMatch) {
-            relatedLogs = relatedLogsMatch[1].split(',').map(l => l.trim().replace(/"/g, ''));
-          }
-          
-          const createdMatch = frontmatter.match(/created:\s*(.*)/);
-          if (createdMatch) createdAt = createdMatch[1].trim();
-        }
-        
-        notes.push({ 
-          id: id,
-          title: title,
-          summary: summary,
-          tags: tags,
-          relatedLogs: relatedLogs,
-          createdAt: createdAt,
-          content: content 
-        });
-      }
-    }
-    
-    res.json(notes);
-  } catch (error) {
-    console.error('Error reading notes:', error);
-    res.status(500).json({ error: 'Failed to read notes' });
   }
 });
 
@@ -544,134 +608,8 @@ app.get('/api/notes-by-tag/:tag', async (req, res) => {
   }
 });
 
-// API endpoint to get all research reports
-app.get('/api/reports', async (req, res) => {
-  try {
-    const reportsDir = path.join(__dirname, 'content', 'reports');
-    await ensureDirectoryExists(reportsDir);
-    
-    // Read the main reports directory for .md files
-    const files = await fs.readdir(reportsDir);
-    const reports = [];
-    
-    for (const file of files) {
-      if (file.endsWith('.md') && file !== 'daily-research.md') {
-        const content = await fs.readFile(path.join(reportsDir, file), 'utf8');
-        const id = file.replace('.md', '');
-        
-        // Parse frontmatter to extract metadata
-        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-        let title = id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        let summary = '';
-        
-        if (frontmatterMatch) {
-          const frontmatter = frontmatterMatch[1];
-          
-          const titleMatch = frontmatter.match(/title:\s*(.*)/);
-          if (titleMatch) title = titleMatch[1].trim();
-          
-          const summaryMatch = frontmatter.match(/summary:\s*"([^"]*)"/);
-          if (summaryMatch) summary = summaryMatch[1];
-        }
-        
-        reports.push({ 
-          id: id,
-          title: title,
-          summary: summary,
-          content: content 
-        });
-      }
-    }
-    
-    // Also check the daily-research subdirectory
-    const dailyResearchDir = path.join(reportsDir, 'daily-research');
-    try {
-      await fs.access(dailyResearchDir);
-      const dailyFiles = await fs.readdir(dailyResearchDir);
-      
-      for (const file of dailyFiles) {
-        if (file.endsWith('.md')) {
-          const content = await fs.readFile(path.join(dailyResearchDir, file), 'utf8');
-          const id = file.replace('.md', '');
-          
-          // Parse frontmatter to extract metadata
-          const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-          let title = id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-          let summary = '';
-          
-          if (frontmatterMatch) {
-            const frontmatter = frontmatterMatch[1];
-            
-            const titleMatch = frontmatter.match(/title:\s*(.*)/);
-            if (titleMatch) title = titleMatch[1].trim();
-            
-            const summaryMatch = frontmatter.match(/summary:\s*"([^"]*)"/);
-            if (summaryMatch) summary = summaryMatch[1];
-          }
-          
-          reports.push({ 
-            id: id,
-            title: title,
-            summary: summary,
-            content: content 
-          });
-        }
-      }
-    } catch (error) {
-      // daily-research directory might not exist, that's fine
-    }
-    
-    res.json(reports);
-  } catch (error) {
-    console.error('Error reading reports:', error);
-    res.status(500).json({ error: 'Failed to read reports' });
-  }
-});
-
-// API endpoint to get a specific report
-app.get('/api/reports/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const reportsDir = path.join(__dirname, 'content', 'reports');
-    
-    // Try main reports directory first
-    let filePath = path.join(reportsDir, `${id}.md`);
-    let content;
-    
-    try {
-      content = await fs.readFile(filePath, 'utf8');
-    } catch (error) {
-      // Try daily-research subdirectory
-      filePath = path.join(reportsDir, 'daily-research', `${id}.md`);
-      content = await fs.readFile(filePath, 'utf8');
-    }
-    
-    // Parse frontmatter
-    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-    let title = id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    let summary = '';
-    
-    if (frontmatterMatch) {
-      const frontmatter = frontmatterMatch[1];
-      
-      const titleMatch = frontmatter.match(/title:\s*(.*)/);
-      if (titleMatch) title = titleMatch[1].trim();
-      
-      const summaryMatch = frontmatter.match(/summary:\s*"([^"]*)"/);
-      if (summaryMatch) summary = summaryMatch[1];
-    }
-    
-    res.json({ 
-      id: id,
-      title: title,
-      summary: summary,
-      content: content 
-    });
-  } catch (error) {
-    console.error('Error reading report:', error);
-    res.status(404).json({ error: 'Report not found' });
-  }
-});
+// Serve static files (MUST be after API routes)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Handle all other routes by serving index.html
 app.get(/.*/, (req, res) => {
