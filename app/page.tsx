@@ -1,6 +1,5 @@
 import { ContentManager } from "@/lib/content-manager";
 import Link from "next/link";
-import { format } from "date-fns";
 
 export default async function HomePage() {
   // Get all logs and notes
@@ -10,12 +9,12 @@ export default async function HomePage() {
   
   // Sort logs by date (newest first)
   const sortedLogs = logs.sort((a, b) => 
-    new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime()
+    a.metadata.date.localeCompare(b.metadata.date)
   );
   
   // Sort notes by creation date (newest first)
   const sortedNotes = notes.sort((a, b) => 
-    new Date(b.metadata.created).getTime() - new Date(a.metadata.created).getTime()
+    b.metadata.created.localeCompare(a.metadata.created)
   );
 
   return (
@@ -74,7 +73,7 @@ export default async function HomePage() {
                 <div className="flex justify-between items-start">
                   <h3 className="font-semibold text-lg">{note.metadata.title}</h3>
                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                    {format(new Date(note.metadata.created), 'MMM d, yyyy')}
+                    {note.metadata.created}
                   </span>
                 </div>
                 <p className="mt-2 text-gray-600 dark:text-gray-300 text-sm">
@@ -117,7 +116,7 @@ export default async function HomePage() {
                 <div className="flex justify-between items-center">
                   <h3 className="font-semibold">{log.date}</h3>
                   <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {format(new Date(log.date), 'EEEE')}
+                    Log
                   </span>
                 </div>
                 <p className="mt-2 text-gray-600 dark:text-gray-300 text-sm">

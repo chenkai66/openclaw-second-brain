@@ -1,6 +1,35 @@
 import fs from 'fs';
 import path from 'path';
 
+// Helper function to parse the custom date format (YYYY-MM-DD-HH-mm-ss)
+function parseCustomDate(dateString: string): Date {
+  // Handle standard date format (YYYY-MM-DD)
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    return new Date(dateString);
+  }
+  
+  // Handle custom format (YYYY-MM-DD-HH-mm-ss)
+  const parts = dateString.split('-');
+  if (parts.length >= 3) {
+    const year = parseInt(parts[0]);
+    const month = parseInt(parts[1]) - 1; // Month is 0-indexed in JS
+    const day = parseInt(parts[2]);
+    const hour = parts.length > 3 ? parseInt(parts[3]) : 0;
+    const minute = parts.length > 4 ? parseInt(parts[4]) : 0;
+    const second = parts.length > 5 ? parseInt(parts[5]) : 0;
+    
+    return new Date(year, month, day, hour, minute, second);
+  }
+  
+  // Fallback to current date if parsing fails
+  return new Date();
+}
+
+// Helper function to format date for display
+function formatDateForDisplay(date: Date): string {
+  return date.toISOString().split('T')[0];
+}
+
 export class ContentManager {
   private contentDir: string;
   private logsDir: string;
@@ -117,12 +146,18 @@ ${content}
     const frontmatterMatch = existingContent.match(/^---\n([\s\S]*?)\n---/);
     let title = slug.replace(/-/g, ' ');
     let relatedLogs: string[] = [];
+    let created = new Date().toISOString().split('T')[0];
     
     if (frontmatterMatch) {
       const frontmatterContent = frontmatterMatch[1];
       const titleMatch = frontmatterContent.match(/title:\s*(.*)/);
       if (titleMatch) {
         title = titleMatch[1].trim();
+      }
+      
+      const createdMatch = frontmatterContent.match(/created:\s*(.*)/);
+      if (createdMatch) {
+        created = createdMatch[1].trim();
       }
       
       const relatedLogsMatch = frontmatterContent.match(/related_logs:\s*\[(.*?)\]/);
@@ -133,7 +168,7 @@ ${content}
     
     const frontmatter = `---
 title: ${title}
-created: ${new Date().toISOString().split('T')[0]}
+created: ${created}
 updated: ${new Date().toISOString().split('T')[0]}
 tags: [${tags.map(tag => `"${tag}"`).join(', ')}]
 related_logs: [${relatedLogs.map(log => `"${log}"`).join(', ')}]
@@ -150,34 +185,91 @@ ${content}
     fs.writeFileSync(filePath, frontmatter);
   }
 
-  async getAllLogs(): Promise<Array<{ id: string; content: string }>> {
+  // Parse frontmatter from markdown content
+  private parseFrontmatter(content: string): Record<string, any> {
+    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    if (!frontmatterMatch) {
+      return {};
+    }
+    
+    const frontmatterContent = frontmatterMatch[1];
+    const metadata: Record<string, any> = {};
+    
+    // Parse date
+    const dateMatch = frontmatterContent.match(/date:\s*(.*)/);
+    if (dateMatch) {
+      metadata.date = dateMatch[1].trim();
+    }
+    
+    // Parse title
+    const titleMatch = frontmatterContent.match(/title:\s*(.*)/);
+    if (titleMatch) {
+      metadata.title = titleMatch[1].trim();
+    }
+    
+    // Parse summary
+    const summaryMatch = frontmatterContent.match(/summary:\s*"([^"]*)"/);
+    if (summaryMatch) {
+      metadata.summary = summaryMatch[1];
+    }
+    
+    // Parse created date
+    const createdMatch = frontmatterContent.match(/created:\s*(.*)/);
+    if (createdMatch) {
+      metadata.created = createdMatch[1].trim();
+    }
+    
+    // Parse tags
+    const tagsMatch = frontmatterContent.match(/tags:\s*\[(.*?)\]/);
+    if (tagsMatch && tagsMatch[1].trim()) {
+      metadata.tags = tagsMatch[1].split(',').map(t => t.trim().replace(/"/g, ''));
+    }
+    
+    return metadata;
+  }
+
+  async getAllLogs(): Promise<Array<{ id: string; content: string; metadata: Record<string, any> }>> {
     const files = fs.readdirSync(this.logsDir);
-    const logs: Array<{ id: string; content: string }> = [];
+    const logs: Array<{ id: string; content: string; metadata: Record<string, any> }> = [];
     
     for (const file of files) {
       if (file.endsWith('.md')) {
         const content = fs.readFileSync(path.join(this.logsDir, file), 'utf8');
         const id = file.replace('.md', '');
-        logs.push({ id, content });
+        const metadata = this.parseFrontmatter(content);
+        logs.push({ id, content, metadata });
       }
     }
     
     // Sort by date (newest first)
-    logs.sort((a, b) => new Date(b.id).getTime() - new Date(a.id).getTime());
+    logs.sort((a, b) => {
+      const dateA = parseCustomDate(a.id).getTime();
+      const dateB = parseCustomDate(b.id).getTime();
+      return dateB - dateA;
+    });
+    
     return logs;
   }
 
-  async getAllNotes(): Promise<Array<{ id: string; content: string }>> {
+  async getAllNotes(): Promise<Array<{ id: string; content: string; metadata: Record<string, any> }>> {
     const files = fs.readdirSync(this.notesDir);
-    const notes: Array<{ id: string; content: string }> = [];
+    const notes: Array<{ id: string; content: string; metadata: Record<string, any> }> = [];
     
     for (const file of files) {
       if (file.endsWith('.md')) {
         const content = fs.readFileSync(path.join(this.notesDir, file), 'utf8');
         const id = file.replace('.md', '');
-        notes.push({ id, content });
+        const metadata = this.parseFrontmatter(content);
+        notes.push({ id, content, metadata });
       }
     }
+    
+    // Sort by creation date (newest first)
+    notes.sort((a, b) => {
+      const createdA = a.metadata.created ? new Date(a.metadata.created).getTime() : 0;
+      const createdB = b.metadata.created ? new Date(b.metadata.created).getTime() : 0;
+      return createdB - createdA;
+    });
     
     return notes;
   }
