@@ -1,0 +1,14 @@
+[
+  {
+    "id": "conv-2026-02-06-1",
+    "timestamp": "2026-02-06T13:45:00Z",
+    "content": "We're building a second brain system that automatically logs conversations and extracts important topics into structured notes.",
+    "topics": ["second-brain", "knowledge-management", "ai-organization"]
+  },
+  {
+    "id": "conv-2026-02-06-2", 
+    "timestamp": "2026-02-06T13:46:00Z",
+    "content": "The frontend should display summary cards on the homepage with tags, and detailed views when clicked. We also need a knowledge graph visualization based on these tags.",
+    "topics": ["frontend-design", "knowledge-graph", "user-interface"]
+  }
+]

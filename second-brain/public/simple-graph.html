@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Knowledge Graph Test</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .container { width: 800px; height: 600px; margin: 20px auto; }
+        .node { stroke: #fff; stroke-width: 1.5px; }
+        .link { stroke: #999; stroke-opacity: 0.6; }
+        .label { font-size: 12px; text-anchor: middle; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <svg id="graph" width="800" height="600"></svg>
+    </div>
+
+    <script>
+        // Simple test data
+        const nodes = [
+            {id: "second-brain", label: "Second Brain"},
+            {id: "knowledge-management", label: "Knowledge Management"},
+            {id: "automation", label: "Automation"}
+        ];
+        
+        const links = [
+            {source: "second-brain", target: "knowledge-management"},
+            {source: "second-brain", target: "automation"}
+        ];
+        
+        const svg = d3.select("#graph");
+        const width = 800, height = 600;
+        
+        // Create link elements
+        const link = svg.append("g")
+            .attr("class", "links")
+            .selectAll("line")
+            .data(links)
+            .enter().append("line")
+            .attr("class", "link");
+            
+        // Create node elements  
+        const node = svg.append("g")
+            .attr("class", "nodes")
+            .selectAll("circle")
+            .data(nodes)
+            .enter().append("circle")
+            .attr("class", "node")
+            .attr("r", 10)
+            .attr("fill", "#4f46e5");
+            
+        // Create labels
+        const label = svg.append("g")
+            .attr("class", "labels")
+            .selectAll("text")
+            .data(nodes)
+            .enter().append("text")
+            .attr("class", "label")
+            .text(d => d.label)
+            .attr("dy", -15);
+            
+        // Position nodes in a simple layout
+        node.attr("cx", (d, i) => 200 + i * 200)
+            .attr("cy", 300);
+            
+        label.attr("x", (d, i) => 200 + i * 200)
+             .attr("y", 300);
+             
+        // Position links
+        link.attr("x1", d => {
+            const sourceNode = nodes.find(n => n.id === d.source);
+            return 200 + nodes.indexOf(sourceNode) * 200;
+        })
+        .attr("y1", 300)
+        .attr("x2", d => {
+            const targetNode = nodes.find(n => n.id === d.target);
+            return 200 + nodes.indexOf(targetNode) * 200;
+        })
+        .attr("y2", 300);
+        
+        console.log("Simple graph loaded successfully!");
+    </script>
+</body>
+</html>

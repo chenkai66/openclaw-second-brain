@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Knowledge Graph Debug</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .graph-container {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Knowledge Graph Debug Page</h1>
+    <div id="graph" class="graph-container"></div>
+    
+    <script>
+        // Simple graph test
+        console.log('D3 version:', d3.version);
+        
+        fetch('/api/knowledge-graph')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Data received:', data);
+                if (data.nodes && data.nodes.length > 0) {
+                    document.getElementById('graph').innerHTML = '<p>✅ Data loaded successfully! Nodes: ' + data.nodes.length + '</p>';
+                } else {
+                    document.getElementById('graph').innerHTML = '<p>❌ No nodes found</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('graph').innerHTML = '<p>❌ Error loading data: ' + error.message + '</p>';
+            });
+    </script>
+</body>
+</html>

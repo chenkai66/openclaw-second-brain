@@ -1,0 +1,192 @@
+{
+  "tags": [
+    {
+      "name": "second-brain",
+      "category": "system",
+      "description": "Core Second Brain system functionality and architecture",
+      "usage_count": 7,
+      "created_at": "2026-02-06T13:48:00+08:00",
+      "aliases": [
+        "knowledge-system",
+        "personal-knowledge-base"
+      ]
+    },
+    {
+      "name": "server-deployment",
+      "category": "infrastructure",
+      "description": "Server setup, deployment, and configuration",
+      "usage_count": 4,
+      "created_at": "2026-02-09T16:33:50+08:00",
+      "aliases": [
+        "server-setup",
+        "deployment",
+        "hosting"
+      ]
+    },
+    {
+      "name": "public-access",
+      "category": "infrastructure",
+      "description": "Public network access and connectivity",
+      "usage_count": 4,
+      "created_at": "2026-02-09T16:33:50+08:00",
+      "aliases": [
+        "web-access",
+        "network-access",
+        "public-network"
+      ]
+    },
+    {
+      "name": "api",
+      "category": "development",
+      "description": "REST API endpoints and interfaces",
+      "usage_count": 2,
+      "created_at": "2026-02-09T16:33:50+08:00",
+      "aliases": [
+        "rest-api",
+        "endpoints",
+        "interfaces"
+      ]
+    },
+    {
+      "name": "web-interface",
+      "category": "frontend",
+      "description": "Web frontend and user interface",
+      "usage_count": 2,
+      "created_at": "2026-02-09T16:33:50+08:00",
+      "aliases": [
+        "frontend",
+        "ui",
+        "user-interface"
+      ]
+    },
+    {
+      "name": "cron-jobs",
+      "category": "automation",
+      "description": "Scheduled tasks and automation",
+      "usage_count": 4,
+      "created_at": "2026-02-09T16:35:34+08:00",
+      "aliases": [
+        "scheduled-tasks",
+        "automation",
+        "timers"
+      ]
+    },
+    {
+      "name": "troubleshooting",
+      "category": "maintenance",
+      "description": "Debugging and problem resolution",
+      "usage_count": 2,
+      "created_at": "2026-02-09T16:35:34+08:00",
+      "aliases": [
+        "debugging",
+        "problem-solving",
+        "issue-resolution"
+      ]
+    },
+    {
+      "name": "sync-task",
+      "category": "automation",
+      "description": "Data synchronization processes",
+      "usage_count": 2,
+      "created_at": "2026-02-09T16:35:34+08:00",
+      "aliases": [
+        "synchronization",
+        "data-sync",
+        "sync-process"
+      ]
+    },
+    {
+      "name": "automation",
+      "category": "system",
+      "description": "General automation and workflow optimization",
+      "usage_count": 2,
+      "created_at": "2026-02-09T16:35:34+08:00",
+      "aliases": [
+        "workflow",
+        "optimization",
+        "efficiency"
+      ]
+    },
+    {
+      "name": "system-fix",
+      "category": "maintenance",
+      "description": "System corrections and improvements",
+      "usage_count": 3,
+      "created_at": "2026-02-09T16:35:34+08:00",
+      "aliases": [
+        "bug-fix",
+        "correction",
+        "improvement"
+      ]
+    },
+    {
+      "name": "knowledge-management",
+      "category": "system",
+      "description": "Knowledge organization and curation",
+      "usage_count": 3,
+      "created_at": "2026-02-06T13:48:00+08:00",
+      "aliases": [
+        "knowledge-curation",
+        "information-organization"
+      ]
+    },
+    {
+      "name": "real-time-sync",
+      "category": "automation",
+      "description": "Live synchronization of conversations",
+      "usage_count": 1,
+      "created_at": "2026-02-06T13:48:00+08:00",
+      "aliases": [
+        "live-sync",
+        "conversation-sync"
+      ]
+    },
+    {
+      "name": "chinese-metaphysics",
+      "category": "knowledge",
+      "description": "Chinese traditional metaphysical concepts",
+      "usage_count": 1,
+      "created_at": "2026-02-06T17:09:00+08:00",
+      "aliases": [
+        "traditional-chinese-culture",
+        "chinese-philosophy"
+      ]
+    },
+    {
+      "name": "bagua",
+      "category": "knowledge",
+      "description": "Eight trigrams in Chinese metaphysics",
+      "usage_count": 1,
+      "created_at": "2026-02-06T17:09:00+08:00",
+      "aliases": [
+        "eight-trigrams",
+        "ba-gua"
+      ]
+    },
+    {
+      "name": "yinyang",
+      "category": "knowledge",
+      "description": "Yin and Yang philosophy and principles",
+      "usage_count": 1,
+      "created_at": "2026-02-06T17:09:00+08:00",
+      "aliases": [
+        "yin-yang",
+        "duality"
+      ]
+    }
+  ],
+  "categories": [
+    "system",
+    "infrastructure",
+    "development",
+    "frontend",
+    "automation",
+    "maintenance",
+    "knowledge"
+  ],
+  "metadata": {
+    "last_updated": "2026-02-10T01:58:35.170Z",
+    "total_tags": 15,
+    "version": "1.0"
+  }
+}
