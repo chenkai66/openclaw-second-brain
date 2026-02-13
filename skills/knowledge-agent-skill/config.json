@@ -1,5 +1,5 @@
 {
-  "syncInterval": 300,
+  "syncInterval": 3600,
   "contentDir": "./content",
   "notesDir": "./content/notes",
   "logsDir": "./content/logs",

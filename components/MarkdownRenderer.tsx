@@ -86,10 +86,11 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
       <ReactMarkdown 
         remarkPlugins={[remarkGfm]}
         components={{
-          code({ node, inline, className, children, ...props }) {
+          code({ node, className, children, ...props }: { node: any; className?: string; children: React.ReactNode; inline?: boolean; [key: string]: any }) {
             const match = /language-(\w+)/.exec(className || '');
             const language = match ? match[1] : '';
             const value = String(children).replace(/\n$/, '');
+            const inline = (props as any).inline || false;
             
             return !inline ? (
               <CodeBlock language={language} value={value} />
