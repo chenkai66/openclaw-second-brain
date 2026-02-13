@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     };
     
     // Create the note file
-    await contentManager.createNote(slug, metadata, content);
+    await contentManager.createNote(slug, title, content, tags, relatedLogs);
     
     return new Response(JSON.stringify({ success: true, slug }), {
       status: 201,

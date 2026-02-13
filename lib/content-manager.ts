@@ -35,10 +35,13 @@ export class ContentManager {
   private logsDir: string;
   private notesDir: string;
 
+  private reportsDir: string;
+
   constructor() {
     this.contentDir = path.join(process.cwd(), 'content');
     this.logsDir = path.join(this.contentDir, 'logs');
     this.notesDir = path.join(this.contentDir, 'notes');
+    this.reportsDir = path.join(this.contentDir, 'reports');
     
     // Ensure directories exist
     if (!fs.existsSync(this.logsDir)) {
@@ -46,6 +49,9 @@ export class ContentManager {
     }
     if (!fs.existsSync(this.notesDir)) {
       fs.mkdirSync(this.notesDir, { recursive: true });
+    }
+    if (!fs.existsSync(this.reportsDir)) {
+      fs.mkdirSync(this.reportsDir, { recursive: true });
     }
   }
 
@@ -228,39 +234,43 @@ ${content}
     return metadata;
   }
 
-  async getAllLogs(): Promise<Array<{ id: string; content: string; metadata: Record<string, any> }>> {
+  async getAllLogs(): Promise<Array<{ date: string; slug: string; content: string; metadata: Record<string, any> }>> {
     const files = fs.readdirSync(this.logsDir);
-    const logs: Array<{ id: string; content: string; metadata: Record<string, any> }> = [];
+    const logs: Array<{ date: string; slug: string; content: string; metadata: Record<string, any> }> = [];
     
     for (const file of files) {
       if (file.endsWith('.md')) {
         const content = fs.readFileSync(path.join(this.logsDir, file), 'utf8');
-        const id = file.replace('.md', '');
+        const slug = file.replace('.md', '');
         const metadata = this.parseFrontmatter(content);
-        logs.push({ id, content, metadata });
+        
+        // Extract date from filename or metadata
+        const date = metadata.date || slug;
+        
+        logs.push({ date, slug, content, metadata });
       }
     }
     
     // Sort by date (newest first)
     logs.sort((a, b) => {
-      const dateA = parseCustomDate(a.id).getTime();
-      const dateB = parseCustomDate(b.id).getTime();
+      const dateA = parseCustomDate(a.slug).getTime();
+      const dateB = parseCustomDate(b.slug).getTime();
       return dateB - dateA;
     });
     
     return logs;
   }
 
-  async getAllNotes(): Promise<Array<{ id: string; content: string; metadata: Record<string, any> }>> {
+  async getAllNotes(): Promise<Array<{ slug: string; content: string; metadata: Record<string, any> }>> {
     const files = fs.readdirSync(this.notesDir);
-    const notes: Array<{ id: string; content: string; metadata: Record<string, any> }> = [];
+    const notes: Array<{ slug: string; content: string; metadata: Record<string, any> }> = [];
     
     for (const file of files) {
       if (file.endsWith('.md')) {
         const content = fs.readFileSync(path.join(this.notesDir, file), 'utf8');
-        const id = file.replace('.md', '');
+        const slug = file.replace('.md', '');
         const metadata = this.parseFrontmatter(content);
-        notes.push({ id, content, metadata });
+        notes.push({ slug, content, metadata });
       }
     }
     
@@ -279,5 +289,54 @@ ${content}
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
+  }
+
+  async deleteLog(date: string): Promise<boolean> {
+    const filePath = path.join(this.logsDir, `${date}.md`);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      return true;
+    }
+    return false;
+  }
+
+  async getAllReports(): Promise<Array<{ slug: string; content: string; metadata: Record<string, any> }>> {
+    const files = fs.readdirSync(this.reportsDir);
+    const reports: Array<{ slug: string; content: string; metadata: Record<string, any> }> = [];
+    
+    for (const file of files) {
+      if (file.endsWith('.md')) {
+        const content = fs.readFileSync(path.join(this.reportsDir, file), 'utf8');
+        const slug = file.replace('.md', '');
+        const metadata = this.parseFrontmatter(content);
+        
+        // Extract date from metadata or filename
+        const date = metadata.date || slug.match(/^\d{4}-\d{2}-\d{2}/)?.[0];
+        if (date) {
+          metadata.date = date;
+        }
+        
+        reports.push({ slug, content, metadata });
+      }
+    }
+    
+    // Sort by date (newest first)
+    reports.sort((a, b) => {
+      const dateA = a.metadata.date ? new Date(a.metadata.date).getTime() : 0;
+      const dateB = b.metadata.date ? new Date(b.metadata.date).getTime() : 0;
+      return dateB - dateA;
+    });
+    
+    return reports;
+  }
+
+  async getReport(slug: string): Promise<string> {
+    const filePath = path.join(this.reportsDir, `${slug}.md`);
+    return fs.readFileSync(filePath, 'utf8');
+  }
+
+  async reportExists(slug: string): Promise<boolean> {
+    const filePath = path.join(this.reportsDir, `${slug}.md`);
+    return fs.existsSync(filePath);
   }
 }

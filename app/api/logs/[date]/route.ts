@@ -46,13 +46,9 @@ export async function PUT(
       });
     }
     
-    const updatedLog = await contentManager.updateLog(params.date, {
-      content,
-      summary,
-      topics
-    });
+    await contentManager.updateLog(params.date, content, summary || '');
     
-    return new Response(JSON.stringify(updatedLog), {
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });

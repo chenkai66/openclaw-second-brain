@@ -26,20 +26,19 @@ export async function PUT(
 ) {
   try {
     const contentManager = new ContentManager();
-    const { content, frontmatter } = await request.json();
+    const { content, tags } = await request.json();
     
     // Validate input
     if (!content || typeof content !== 'string') {
       return NextResponse.json({ error: 'Invalid content' }, { status: 400 });
     }
     
-    const updatedNote = await contentManager.updateNote(params.slug, content, frontmatter);
+    // Validate tags
+    const validTags = Array.isArray(tags) ? tags : [];
     
-    if (!updatedNote) {
-      return NextResponse.json({ error: 'Note not found' }, { status: 404 });
-    }
+    await contentManager.updateNote(params.slug, content, validTags);
     
-    return NextResponse.json(updatedNote);
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error updating note:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -52,11 +51,7 @@ export async function DELETE(
 ) {
   try {
     const contentManager = new ContentManager();
-    const success = await contentManager.deleteNote(params.slug);
-    
-    if (!success) {
-      return NextResponse.json({ error: 'Note not found or could not be deleted' }, { status: 404 });
-    }
+    await contentManager.deleteNote(params.slug);
     
     return NextResponse.json({ success: true });
   } catch (error) {
