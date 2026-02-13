@@ -44,12 +44,12 @@ export default function NotesGrid({ notes }: NotesGridProps) {
       <section className="mb-16">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">概念笔记</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Concept Notes</h2>
             <p className="text-gray-600 dark:text-gray-400">
-              AI 自动提取的核心概念与知识点
+              AI-extracted core concepts and knowledge points
               {selectedTags.length > 0 && (
                 <span className="ml-2 text-indigo-600 dark:text-indigo-400">
-                  · 筛选结果: {filteredNotes.length} / {notes.length}
+                  · Filtered: {filteredNotes.length} / {notes.length}
                 </span>
               )}
             </p>
@@ -66,19 +66,19 @@ export default function NotesGrid({ notes }: NotesGridProps) {
             <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <p className="text-gray-500 dark:text-gray-400">暂无笔记，开始对话后将自动生成</p>
+            <p className="text-gray-500 dark:text-gray-400">No notes yet, start a conversation to generate</p>
           </div>
         ) : filteredNotes.length === 0 ? (
           <div className="text-center py-20 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700">
             <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <p className="text-gray-500 dark:text-gray-400">没有找到匹配的笔记</p>
+            <p className="text-gray-500 dark:text-gray-400">No matching notes found</p>
             <button
               onClick={() => setSelectedTags([])}
               className="mt-4 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
             >
-              清除筛选条件
+              Clear filters
             </button>
           </div>
         ) : (
@@ -91,12 +91,12 @@ export default function NotesGrid({ notes }: NotesGridProps) {
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 <div className="h-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 p-6 border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600 hover:-translate-y-1">
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  <div className="flex justify-between items-start gap-3 mb-3">
+                    <h3 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex-1 min-w-0">
                       {note.metadata.title || note.slug}
                     </h3>
-                    <span className="text-xs px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-full font-medium">
-                      笔记
+                    <span className="text-xs px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-full font-medium whitespace-nowrap flex-shrink-0">
+                      Note
                     </span>
                   </div>
                   

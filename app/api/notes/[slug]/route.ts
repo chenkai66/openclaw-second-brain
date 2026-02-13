@@ -24,6 +24,14 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
+  // 生产环境禁止编辑
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json(
+      { error: 'Editing is disabled in production environment' }, 
+      { status: 403 }
+    );
+  }
+
   try {
     const contentManager = new ContentManager();
     const { content, tags } = await request.json();

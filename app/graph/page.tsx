@@ -13,7 +13,7 @@ const DynamicKnowledgeGraphViewer = dynamic(
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <p className="text-gray-600 dark:text-gray-400">加载知识图谱...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading Knowledge Graph...</p>
         </div>
       </div>
     ),
@@ -22,8 +22,8 @@ const DynamicKnowledgeGraphViewer = dynamic(
 );
 
 export const metadata = {
-  title: '知识图谱 - Second Brain',
-  description: '可视化展示笔记、日志和标签之间的关系',
+  title: 'Knowledge Graph - Second Brain',
+  description: 'Visualize relationships between notes, logs, and tags',
 };
 
 // 启用缓存
@@ -31,7 +31,8 @@ export const revalidate = 300; // 5分钟
 
 export default function GraphPage() {
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto">
       {/* 页面头部 */}
       <div className="mb-8">
         <Link 
@@ -41,16 +42,16 @@ export default function GraphPage() {
           <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          返回首页
+          Back to Home
         </Link>
 
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">
-              知识图谱
+              Knowledge Graph
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-400">
-              探索笔记、日志和标签之间的关系网络
+              Explore relationships between notes, logs, and tags
             </p>
           </div>
         </div>
@@ -65,26 +66,27 @@ export default function GraphPage() {
           <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          使用说明
+          How to Use
         </h3>
         <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
           <li className="flex items-start gap-2">
             <span className="text-indigo-600 dark:text-indigo-400">•</span>
-            <span><strong>节点颜色：</strong>蓝色代表笔记，紫色代表日志，粉色代表标签</span>
+            <span><strong>Node Colors:</strong> Blue for notes, purple for logs, pink for tags</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="text-indigo-600 dark:text-indigo-400">•</span>
-            <span><strong>节点大小：</strong>节点越大表示关联的内容越多</span>
+            <span><strong>Node Size:</strong> Larger nodes have more connections</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="text-indigo-600 dark:text-indigo-400">•</span>
-            <span><strong>连接线：</strong>表示内容之间的关联关系</span>
+            <span><strong>Links:</strong> Show relationships between content</span>
           </li>
           <li className="flex items-start gap-2">
             <span className="text-indigo-600 dark:text-indigo-400">•</span>
-            <span><strong>交互操作：</strong>拖拽节点移动位置，滚轮缩放视图，点击节点查看详情</span>
+            <span><strong>Interactions:</strong> Drag nodes to move, scroll to zoom, click to view details</span>
           </li>
         </ul>
+      </div>
       </div>
     </div>
   );

@@ -17,9 +17,7 @@ export default function RootLayout({
       <body className="antialiased">
         <ToastProvider>
           <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-            <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              {children}
-            </main>
+            {children}
             
             {/* Background decoration */}
             <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">

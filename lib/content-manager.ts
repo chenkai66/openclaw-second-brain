@@ -172,6 +172,7 @@ ${content}
       }
     }
     
+    // Build the complete file content with frontmatter and user content
     const frontmatter = `---
 title: ${title}
 created: ${created}
@@ -181,11 +182,7 @@ related_logs: [${relatedLogs.map(log => `"${log}"`).join(', ')}]
 ai_refined: true
 ---
 
-# ${title}
-
-${content}
-
-> 本文档由 Clawdbot 在对话中自动生成并命名。`;
+${content}`;
     
     const filePath = path.join(this.notesDir, `${slug}.md`);
     fs.writeFileSync(filePath, frontmatter);

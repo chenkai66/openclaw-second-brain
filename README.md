@@ -9,9 +9,6 @@
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
-
-[English](README.md) · [中文文档](README_CN.md) · [Demo](https://second-brain-demo.vercel.app)
 
 </div>
 
@@ -341,12 +338,6 @@ openclaw cron run <job-id>
 
 ---
 
-## 📄 许可证
-
-本项目采用 [MIT License](LICENSE) 开源协议。
-
----
-
 ## 🙏 致谢
 
 - [Next.js](https://nextjs.org/) - 强大的React框架
@@ -358,9 +349,8 @@ openclaw cron run <job-id>
 
 ## 📮 联系方式
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/openclaw-second-brain/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/openclaw-second-brain/discussions)
-- **Email**: your.email@example.com
+- **Email**: chenkai.nb.666@gmail.com
+- **微信**: ck1640234528
 
 ---
 
@@ -368,6 +358,6 @@ openclaw cron run <job-id>
 
 **⭐ 如果这个项目对你有帮助，请给一个Star！**
 
-Made with ❤️ by [Your Name](https://github.com/yourusername)
+Made with ❤️ by ChenKai
 
 </div>

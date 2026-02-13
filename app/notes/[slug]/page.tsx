@@ -44,7 +44,8 @@ export default async function NotePage({ params }: NotePageProps) {
   const contentWithoutFrontmatter = noteContent.replace(/^---\n[\s\S]*?\n---\n/, '');
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto">
       {/* Back button */}
       <Link 
         href="/"
@@ -53,7 +54,7 @@ export default async function NotePage({ params }: NotePageProps) {
         <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-        返回首页
+        Back to Home
       </Link>
 
       {/* Note header */}
@@ -69,7 +70,7 @@ export default async function NotePage({ params }: NotePageProps) {
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  创建于 {note.metadata.created}
+                  Created {note.metadata.created}
                 </div>
               )}
               {note.metadata.updated && note.metadata.updated !== note.metadata.created && (
@@ -77,7 +78,7 @@ export default async function NotePage({ params }: NotePageProps) {
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  更新于 {note.metadata.updated}
+                  Updated {note.metadata.updated}
                 </div>
               )}
             </div>
@@ -111,7 +112,7 @@ export default async function NotePage({ params }: NotePageProps) {
       {/* Related logs */}
       {note.metadata.related_logs && note.metadata.related_logs.length > 0 && (
         <section className="mt-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">相关日志</h2>
+          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Related Logs</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {note.metadata.related_logs.map((logDate: string) => (
               <Link 
@@ -137,6 +138,7 @@ export default async function NotePage({ params }: NotePageProps) {
           </div>
         </section>
       )}
+      </div>
     </div>
   );
 }

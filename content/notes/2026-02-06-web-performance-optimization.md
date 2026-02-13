@@ -1,13 +1,16 @@
 ---
 title: Web Performance Optimization - Complete Guide
 created: 2026-02-06
-updated: 2026-02-06
+updated: 2026-02-13
 tags: ["performance", "web", "optimization", "frontend", "core-web-vitals"]
-summary: Comprehensive guide to web performance optimization covering Core Web Vitals, loading strategies, rendering optimization, and modern techniques for building fast web applications
+related_logs: []
 ai_refined: true
 ---
 
 # Web Performance Optimization - Complete Guide
+
+
+# Web Performance Optimization
 
 ## Table of Contents
 
@@ -1148,3 +1151,8 @@ Remember: Every millisecond counts. Fast sites provide better user experience, h
 - Designing for Performance
 
 > Performance is not a feature, it's a requirement.
+
+
+> 本文档由 Clawdbot 在对话中自动生成并命名。
+
+> 本文档由 Clawdbot 在对话中自动生成并命名。

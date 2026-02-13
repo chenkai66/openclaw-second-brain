@@ -19,12 +19,23 @@ export default async function ResearchPage() {
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-6xl mx-auto">
+        {/* Back button */}
+        <Link 
+          href="/"
+          className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors mb-8 group"
+        >
+          <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Home
+        </Link>
+
         <div className="mb-12">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
             📊 Daily Research
           </h1>
           <p className="text-gray-400 text-lg">
-            深度技术调研报告与行业分析
+            In-depth technical research reports and industry analysis
           </p>
         </div>
 
@@ -70,7 +81,7 @@ export default async function ResearchPage() {
 
         {processedReports.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-gray-500 text-lg">暂无研究报告</p>
+            <p className="text-gray-500 text-lg">No research reports yet</p>
           </div>
         )}
       </div>

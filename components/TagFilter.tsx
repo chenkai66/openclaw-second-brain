@@ -74,14 +74,14 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
           <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
           </svg>
-          标签筛选
+          Filter by Tags
         </h3>
         {selectedTags.length > 0 && (
           <button
             onClick={clearFilters}
             className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
           >
-            清除筛选
+            Clear Filters
           </button>
         )}
       </div>
@@ -89,7 +89,7 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
       {selectedTags.length > 0 && (
         <div className="mb-4 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm text-gray-600 dark:text-gray-400">已选择:</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">Selected:</span>
             {selectedTags.map(tag => (
               <button
                 key={tag}
@@ -142,14 +142,14 @@ export default function TagFilter({ onFilterChange }: TagFilterProps) {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
               </svg>
-              收起
+              Show Less
             </>
           ) : (
             <>
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
-              显示全部 ({tags.length})
+              Show All ({tags.length})
             </>
           )}
         </button>
