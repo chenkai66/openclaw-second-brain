@@ -1,0 +1,78 @@
+{
+  "skill_name": "social-research",
+  "version": "1.0.0",
+  "description": "Research trending topics from Reddit and X (Twitter)",
+  "author": "Clawdbot Team",
+  
+  "default_settings": {
+    "days": 30,
+    "min_engagement": 5,
+    "max_results": 50,
+    "include_comments": false,
+    "sentiment_analysis": false,
+    "export_format": "md"
+  },
+  
+  "platforms": {
+    "reddit": {
+      "enabled": true,
+      "api_required": false,
+      "fallback": "pushshift",
+      "rate_limit": {
+        "requests_per_minute": 60,
+        "delay_between_requests": 1
+      }
+    },
+    "twitter": {
+      "enabled": true,
+      "api_required": false,
+      "fallback": "web_scraping",
+      "rate_limit": {
+        "requests_per_minute": 180,
+        "delay_between_requests": 1
+      }
+    }
+  },
+  
+  "engagement_thresholds": {
+    "reddit": {
+      "min_upvotes": 5,
+      "min_comments": 2,
+      "score_weight": {
+        "upvotes": 1,
+        "comments": 2
+      }
+    },
+    "twitter": {
+      "min_likes": 5,
+      "min_retweets": 1,
+      "score_weight": {
+        "likes": 1,
+        "retweets": 3,
+        "replies": 2
+      }
+    }
+  },
+  
+  "content_generation": {
+    "blog_posts": {
+      "max_ideas": 8,
+      "estimated_length": "1500-3000 words"
+    },
+    "social_media": {
+      "max_ideas": 6,
+      "platforms": ["twitter", "linkedin", "instagram"]
+    },
+    "videos": {
+      "max_ideas": 5,
+      "platforms": ["youtube", "tiktok", "reels"]
+    }
+  },
+  
+  "output": {
+    "directory": "output",
+    "filename_format": "{timestamp}_{topic}",
+    "formats": ["md", "json", "csv"]
+  }
+}
+

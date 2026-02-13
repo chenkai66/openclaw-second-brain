@@ -1,0 +1,58 @@
+{
+  "reddit_sample": [
+    {
+      "id": "abc123",
+      "title": "Just discovered Cursor AI and it's amazing for coding",
+      "text": "I've been using Cursor for a week now and it's completely changed my workflow. The AI suggestions are spot-on and it integrates perfectly with my existing setup.",
+      "author": "developer123",
+      "subreddit": "programming",
+      "url": "https://reddit.com/r/programming/comments/abc123",
+      "score": 245,
+      "num_comments": 67,
+      "created_utc": 1707350400,
+      "created_date": "2024-02-08T00:00:00",
+      "platform": "reddit"
+    },
+    {
+      "id": "def456",
+      "title": "Cursor vs GitHub Copilot - Which one should I choose?",
+      "text": "I'm trying to decide between Cursor and GitHub Copilot. Has anyone used both? What are the main differences?",
+      "author": "coder_jane",
+      "subreddit": "webdev",
+      "url": "https://reddit.com/r/webdev/comments/def456",
+      "score": 189,
+      "num_comments": 143,
+      "created_utc": 1707436800,
+      "created_date": "2024-02-09T00:00:00",
+      "platform": "reddit"
+    }
+  ],
+  
+  "twitter_sample": [
+    {
+      "id": "1234567890",
+      "text": "Cursor AI is a game changer for developers. The context awareness is incredible. #AI #coding #productivity",
+      "author": "techdev",
+      "author_name": "Tech Developer",
+      "url": "https://twitter.com/techdev/status/1234567890",
+      "likes": 342,
+      "retweets": 89,
+      "replies": 45,
+      "created_at": "2024-02-08T12:00:00Z",
+      "platform": "twitter"
+    },
+    {
+      "id": "0987654321",
+      "text": "Been testing Cursor for the past month. Here's what I learned:\n\n1. Context matters\n2. Works great with TypeScript\n3. Saves hours daily\n4. Worth every penny\n\nThread 🧵",
+      "author": "devguru",
+      "author_name": "Dev Guru",
+      "url": "https://twitter.com/devguru/status/0987654321",
+      "likes": 567,
+      "retweets": 123,
+      "replies": 78,
+      "created_at": "2024-02-09T15:30:00Z",
+      "platform": "twitter"
+    }
+  ]
+}
+
