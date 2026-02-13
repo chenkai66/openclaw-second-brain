@@ -151,6 +151,30 @@ OpenClaw 自动管理任务执行历史：
 - 自动清理：旧记录会被自动清理
 - 查看方式：使用 `openclaw cron runs --id <job-id>` 命令
 
+### 4. Agent 中间产物
+
+子 Agent 在执行过程中会产生中间产物（分析结果、决策记录、执行日志等），这些文件保存在：
+
+```
+.agent-workspace/
+├── knowledge-agent/     # Knowledge Agent 的中间产物
+├── research-agent/      # Research Agent 的中间产物
+└── social-research/     # Social Research 的中间产物
+```
+
+**重要说明**：
+- ⚠️ `.agent-workspace/` 目录的内容**不会**被网页应用加载
+- 这些文件仅用于观察 Agent 的行为轨迹和调试
+- 已添加到 `.gitignore`，不会提交到 Git
+- 可以安全删除以释放磁盘空间
+
+**建议子 Agent 保存的内容**：
+- 执行日志（每次运行的详细记录）
+- 分析结果（兴趣点、标签匹配、相似度计算等）
+- 决策记录（为什么做某个决策的理由）
+- 搜索结果（原始数据和筛选过程）
+- 内容整合（报告生成的中间步骤）
+
 ---
 
 ## 故障排查

@@ -2,6 +2,23 @@
 
 Research trending topics and real community discussions from Reddit and X (Twitter) in the last 30 days, with content creation and topic suggestions.
 
+## Intermediate Outputs
+
+When executing, this skill saves intermediate results to:
+
+```
+.agent-workspace/social-research/
+```
+
+**Saved content**:
+- `execution-YYYY-MM-DD-HH-mm-ss.log` - Execution logs
+- `search-results-YYYY-MM-DD-HH-mm-ss.json` - Raw search results from Reddit and X
+- `filtered-results-YYYY-MM-DD-HH-mm-ss.json` - After engagement filtering
+- `trend-analysis-YYYY-MM-DD-HH-mm-ss.json` - Trend detection results
+- `content-suggestions-YYYY-MM-DD-HH-mm-ss.json` - Generated content ideas
+
+⚠️ **Important**: These files in `.agent-workspace/` are **NOT** loaded by the web application. They are only for observing agent behavior and debugging.
+
 ## Features
 
 - **Parallel Search**: Simultaneously searches Reddit and X for maximum efficiency

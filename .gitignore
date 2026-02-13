@@ -50,3 +50,9 @@ next-env.d.ts
 # content/logs/*.md
 # content/notes/*.md
 # agent-logs/*.md
+
+# Agent workspace (intermediate outputs and traces)
+.agent-workspace/knowledge-agent/
+.agent-workspace/research-agent/
+.agent-workspace/social-research/
+!.agent-workspace/README.md
