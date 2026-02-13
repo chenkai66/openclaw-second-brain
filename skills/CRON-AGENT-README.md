@@ -39,7 +39,7 @@ openclaw cron add \
 
 ### 任务 2：Research Agent（研究报告）
 
-**执行周期**：每天 23:00（America/Los_Angeles 时区）
+**执行周期**：每天 23:00（Asia/Shanghai 时区）
 
 **执行方式**：isolated（隔离会话）
 
@@ -57,7 +57,7 @@ openclaw cron add \
 openclaw cron add \
   --name "Daily Research" \
   --cron "0 23 * * *" \
-  --tz "America/Los_Angeles" \
+  --tz "Asia/Shanghai" \
   --session isolated \
   --message "Execute daily research: read skills/research-agent-skill/SKILL.md and config.json, then analyze interests and generate research report." \
   --delivery none
