@@ -1,0 +1,59 @@
+{
+  "lastSyncTimestamp": "2026-02-13T21:30:00Z",
+  "lastProcessedConversationId": "conv_initial",
+  "syncHistory": [
+    {
+      "timestamp": "2026-02-13T21:30:00Z",
+      "processedCount": 0,
+      "createdNotes": 0,
+      "createdLogs": 0,
+      "updatedNotes": 0,
+      "updatedLogs": 0,
+      "errors": 0,
+      "duration": 0
+    }
+  ],
+  "statistics": {
+    "totalConversationsProcessed": 0,
+    "totalNotesCreated": 8,
+    "totalLogsCreated": 20,
+    "totalNotesUpdated": 0,
+    "totalLogsUpdated": 0,
+    "averageProcessingTime": 0,
+    "lastError": null
+  },
+  "contentIndex": {
+    "notes": [
+      {
+        "slug": "2026-02-13-second-brain-system-guide",
+        "tags": ["second-brain", "knowledge-management", "automation", "architecture"],
+        "lastUpdated": "2026-02-13T10:00:00Z",
+        "wordCount": 1500
+      },
+      {
+        "slug": "2026-02-12-react-performance-optimization",
+        "tags": ["react", "performance", "optimization", "frontend"],
+        "lastUpdated": "2026-02-12T15:00:00Z",
+        "wordCount": 2000
+      }
+    ],
+    "logs": [
+      {
+        "slug": "2026-02-13-21-30-00",
+        "topics": ["frontend", "architecture", "state-management"],
+        "lastUpdated": "2026-02-13T21:30:00Z",
+        "wordCount": 1200
+      }
+    ],
+    "tagFrequency": {
+      "react": 5,
+      "typescript": 3,
+      "docker": 2,
+      "performance": 4,
+      "frontend": 6
+    }
+  },
+  "pendingActions": [],
+  "failedConversations": []
+}
+

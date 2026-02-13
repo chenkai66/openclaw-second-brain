@@ -1,0 +1,50 @@
+{
+  "syncInterval": 300,
+  "contentDir": "./content",
+  "notesDir": "./content/notes",
+  "logsDir": "./content/logs",
+  "reportsDir": "./content/reports",
+  "syncStateFile": ".sync-state.json",
+  "similarityThreshold": 0.6,
+  "updateThreshold": 0.7,
+  "maxTagsPerDocument": 7,
+  "logRetentionDays": 90,
+  "enableAutoMerge": true,
+  "enableFAQDetection": true,
+  "projectKeywords": [
+    "second brain",
+    "openclaw",
+    "knowledge management"
+  ],
+  "excludePatterns": [
+    "test",
+    "draft",
+    "temp",
+    ".git"
+  ],
+  "contentTypes": {
+    "note": {
+      "minWordCount": 500,
+      "requireCodeExamples": false,
+      "structure": "tutorial"
+    },
+    "log": {
+      "minWordCount": 200,
+      "requireCodeExamples": true,
+      "structure": "conversation"
+    }
+  },
+  "tagCategories": {
+    "languages": ["javascript", "typescript", "python", "rust", "solidity"],
+    "frameworks": ["react", "vue", "nextjs", "express", "nestjs"],
+    "tools": ["docker", "git", "webpack", "vite"],
+    "concepts": ["performance", "optimization", "architecture", "design-patterns"],
+    "domains": ["frontend", "backend", "devops", "web3", "ai"]
+  },
+  "autoMergeRules": {
+    "faqKeywords": ["问题", "错误", "bug", "issue", "problem", "error", "如何", "怎么"],
+    "tutorialKeywords": ["学习", "教程", "指南", "入门", "实践"],
+    "referenceKeywords": ["API", "文档", "参考", "速查"]
+  }
+}
+

@@ -1,0 +1,89 @@
+{
+  "executionTime": "23:00",
+  "timezone": "Asia/Shanghai",
+  "analysisWindow": 7,
+  "minInterestScore": 0.6,
+  "maxDailyReports": 2,
+  "reportsDir": "./content/reports",
+  "searchSources": [
+    {
+      "name": "google",
+      "enabled": true,
+      "weight": 0.3
+    },
+    {
+      "name": "github",
+      "enabled": true,
+      "weight": 0.25
+    },
+    {
+      "name": "hackernews",
+      "enabled": true,
+      "weight": 0.15
+    },
+    {
+      "name": "devto",
+      "enabled": true,
+      "weight": 0.15
+    },
+    {
+      "name": "medium",
+      "enabled": true,
+      "weight": 0.15
+    }
+  ],
+  "contentQuality": {
+    "minWordCount": 2000,
+    "maxWordCount": 5000,
+    "minCodeExamples": 3,
+    "maxCodeExamples": 10,
+    "minReferences": 5,
+    "maxReferences": 15,
+    "requireRecency": true,
+    "maxAgeDays": 90
+  },
+  "personalization": {
+    "userLevel": "intermediate",
+    "focusAreas": ["frontend", "backend", "fullstack", "devops"],
+    "learningStyle": "practical",
+    "preferredLanguages": ["javascript", "typescript", "python"],
+    "avoidTopics": []
+  },
+  "interestScoring": {
+    "frequencyWeight": 0.4,
+    "recencyWeight": 0.3,
+    "depthWeight": 0.2,
+    "practicalityWeight": 0.1
+  },
+  "reportStructure": {
+    "sections": [
+      "研究背景",
+      "核心发现",
+      "技术深度分析",
+      "最佳实践",
+      "工具和资源",
+      "案例研究",
+      "未来趋势",
+      "推荐行动",
+      "参考资源"
+    ],
+    "requireSummary": true,
+    "summaryMaxWords": 15,
+    "requireTags": true,
+    "minTags": 3,
+    "maxTags": 7
+  },
+  "trendAnalysis": {
+    "enabled": true,
+    "weeklyReport": true,
+    "compareIndustryTrends": true,
+    "skillGapAnalysis": true
+  },
+  "notifications": {
+    "enabled": false,
+    "channels": ["email", "slack"],
+    "onNewReport": true,
+    "onTrendChange": true
+  }
+}
+
