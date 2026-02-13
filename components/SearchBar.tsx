@@ -140,12 +140,12 @@ export default function SearchBar({ placeholder = '搜索笔记和日志...', au
 
       {/* 搜索结果下拉框 */}
       {showResults && results.length > 0 && (
-        <div className="absolute z-50 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl max-h-96 overflow-y-auto">
+        <div className="absolute z-50 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl max-h-[600px] overflow-y-auto">
           {results.map((result, index) => (
             <button
               key={`${result.type}-${result.slug}`}
               onClick={() => navigateToResult(result)}
-              className={`w-full text-left px-4 py-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0 transition-colors ${
+              className={`w-full text-left px-4 py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 transition-colors ${
                 index === selectedIndex
                   ? 'bg-indigo-50 dark:bg-indigo-900/30'
                   : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
