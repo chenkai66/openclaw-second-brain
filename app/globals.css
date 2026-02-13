@@ -234,15 +234,19 @@
 
 /* Copy button for code blocks */
 .code-block-wrapper {
-  @apply relative group;
+  @apply relative;
 }
 
 .copy-code-button {
   @apply absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-medium;
   @apply bg-gray-700/80 hover:bg-gray-600 text-gray-300 hover:text-white;
-  @apply opacity-0 group-hover:opacity-100 transition-all duration-200;
+  @apply opacity-0 transition-all duration-200;
   @apply backdrop-blur-sm border border-gray-600/50;
   @apply flex items-center gap-1.5;
+}
+
+.code-block-wrapper:hover .copy-code-button {
+  @apply opacity-100;
 }
 
 .copy-code-button:active {
