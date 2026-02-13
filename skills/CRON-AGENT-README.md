@@ -15,12 +15,25 @@
 
 ### 步骤 1：构建和启动 Second Brain 服务
 
-**绝对路径**：`/opt/openclaw/openclaw-second-brain/`
+**常见安装路径**（按优先级顺序检查）：
+- `/root/openclaw-second-brain/` （当前用户根目录）
+- `/opt/openclaw/openclaw-second-brain/` （系统级安装）
+- `/home/[username]/openclaw-second-brain/` （用户家目录）
+- `/usr/local/openclaw-second-brain/` （本地系统目录）
 
-**执行命令**：
+**如果以上路径都找不到项目，请使用全局搜索**：
 ```bash
-# 进入项目目录
-cd /opt/openclaw/openclaw-second-brain/
+# 全局搜索 openclaw-second-brain 目录
+find / -type d -name "openclaw-second-brain" 2>/dev/null
+
+# 或者在常见位置搜索
+find /root /home /opt /usr/local -type d -name "openclaw-second-brain" 2>/dev/null
+```
+
+**找到项目后，使用实际路径执行命令**：
+```bash
+# 进入项目目录（替换为实际找到的路径）
+cd /path/to/openclaw-second-brain/
 
 # 安装依赖（如果尚未安装）
 npm install
@@ -49,23 +62,23 @@ npm run start:8000 -- -H 0.0.0.0
 
 **执行方式**：isolated（隔离会话）
 
-**子 Agent 工作目录**：`/opt/openclaw/openclaw-second-brain/skills/knowledge-agent-skill/`
+**子 Agent 工作目录**：`[实际路径]/openclaw-second-brain/skills/knowledge-agent-skill/`
 
 **子 Agent 需要做的事**：
 1. 检查 OpenClaw Gateway 服务状态，如果未运行则启动
-2. 读取 `/opt/openclaw/openclaw-second-brain/skills/knowledge-agent-skill/SKILL.md` 获取工作指令
-3. 读取 `/opt/openclaw/openclaw-second-brain/skills/knowledge-agent-skill/config.json` 获取配置参数
+2. 读取 `[实际路径]/openclaw-second-brain/skills/knowledge-agent-skill/SKILL.md` 获取工作指令
+3. 读取 `[实际路径]/openclaw-second-brain/skills/knowledge-agent-skill/config.json` 获取配置参数
 4. 检查未同步的对话记录
 5. 智能分析并更新或创建 Notes/Logs
 6. 维护知识库的组织结构
 
-**创建命令**：
+**创建命令**（替换 `[实际路径]` 为找到的实际路径）：
 ```bash
 openclaw cron add \
   --name "Knowledge Sync" \
   --cron "0 * * * *" \
   --session isolated \
-  --message "Execute knowledge sync: check OpenClaw gateway status and start if needed, then read /opt/openclaw/openclaw-second-brain/skills/knowledge-agent-skill/SKILL.md and config.json, then sync conversations to knowledge base." \
+  --message "Execute knowledge sync: check OpenClaw gateway status and start if needed, then read [实际路径]/openclaw-second-brain/skills/knowledge-agent-skill/SKILL.md and config.json, then sync conversations to knowledge base." \
   --delivery none
 ```
 
@@ -77,24 +90,24 @@ openclaw cron add \
 
 **执行方式**：isolated（隔离会话）
 
-**子 Agent 工作目录**：`/opt/openclaw/openclaw-second-brain/skills/research-agent-skill/`
+**子 Agent 工作目录**：`[实际路径]/openclaw-second-brain/skills/research-agent-skill/`
 
 **子 Agent 需要做的事**：
 1. 检查 OpenClaw Gateway 服务状态，如果未运行则启动
-2. 读取 `/opt/openclaw/openclaw-second-brain/skills/research-agent-skill/SKILL.md` 获取工作指令
-3. 读取 `/opt/openclaw/openclaw-second-brain/skills/research-agent-skill/config.json` 获取配置参数
+2. 读取 `[实际路径]/openclaw-second-brain/skills/research-agent-skill/SKILL.md` 获取工作指令
+3. 读取 `[实际路径]/openclaw-second-brain/skills/research-agent-skill/config.json` 获取配置参数
 4. 分析最近 7 天的对话，提取用户兴趣点
 5. 进行多源互联网搜索
-6. 生成 Daily Research 报告到 `/opt/openclaw/openclaw-second-brain/content/reports/`
+6. 生成 Daily Research 报告到 `[实际路径]/openclaw-second-brain/content/reports/`
 
-**创建命令**：
+**创建命令**（替换 `[实际路径]` 为找到的实际路径）：
 ```bash
 openclaw cron add \
   --name "Daily Research" \
   --cron "0 23 * * *" \
   --tz "Asia/Shanghai" \
   --session isolated \
-  --message "Execute daily research: check OpenClaw gateway status and start if needed, then read /opt/openclaw/openclaw-second-brain/skills/research-agent-skill/SKILL.md and config.json, then analyze interests and generate research report." \
+  --message "Execute daily research: check OpenClaw gateway status and start if needed, then read [实际路径]/openclaw-second-brain/skills/research-agent-skill/SKILL.md and config.json, then analyze interests and generate research report." \
   --delivery none
 ```
 
@@ -252,12 +265,17 @@ OpenClaw 自动管理任务执行历史：
    - Knowledge Agent：每小时，delivery none
    - Research Agent：每天 23:00 Asia/Shanghai，delivery none
 
-3. ✅ **在 message 中明确指示子 Agent**
+3. ✅ **创建服务监控定时任务**
+   - 每 20 分钟检查 Second Brain 服务状态
+   - 自动重启崩溃的服务
+   - 记录监控日志到 `/var/log/second-brain-monitor.log`
+
+4. ✅ **在 message 中明确指示子 Agent**
    - 检查 OpenClaw Gateway 状态并启动（如果需要）
    - 读取完整的绝对路径 SKILL.md 和 config.json
    - 执行各自的核心职责
 
-4. ✅ **验证任务创建成功**（`openclaw cron list`）
+5. ✅ **验证任务创建成功**（`openclaw cron list`）
 
 之后，子 Agent 会在隔离会话中自动按照各自的 SKILL.md 执行工作，你无需干预。
 

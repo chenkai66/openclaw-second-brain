@@ -332,23 +332,44 @@ AI：这是因为缺少 PostCSS 配置...
 ```
 
 ## 配置文件：knowledge-agent-config.json
+
+**重要：对话历史源路径配置**
+
+OpenClaw 的对话历史默认存储在 `~/.openclaw/agents/main/sessions/` 目录下。你需要在配置文件中明确指定 `conversationSource` 字段，否则 Agent 将无法找到对话记录进行同步。
+
 ```json
 {
-  "syncInterval": 300,
+  "syncInterval": 3600,
   "contentDir": "./content",
   "notesDir": "./content/notes",
   "logsDir": "./content/logs",
+  "reportsDir": "./content/reports",
   "syncStateFile": ".sync-state.json",
+  "conversationSource": "/root/.openclaw/agents/main/sessions",
   "similarityThreshold": 0.6,
   "updateThreshold": 0.7,
   "maxTagsPerDocument": 7,
   "logRetentionDays": 90,
   "enableAutoMerge": true,
   "enableFAQDetection": true,
-  "projectKeywords": ["second brain", "openclaw"],
-  "excludePatterns": ["test", "draft", "temp"]
+  "projectKeywords": ["second brain", "openclaw", "knowledge management"],
+  "excludePatterns": ["test", "draft", "temp", ".git"]
 }
 ```
+
+### 关键配置字段说明：
+- **`conversationSource`**: 必需字段，指定 OpenClaw 对话历史的存储路径
+  - 默认路径：`/root/.openclaw/agents/main/sessions`
+  - 如果 OpenClaw 运行在不同用户下，请相应调整路径
+  - 路径必须包含 `.jsonl` 格式的对话历史文件
+
+- **`syncStateFile`**: 同步状态文件，记录上次同步的时间戳和处理的对话ID
+  - 首次运行时会自动创建
+  - 确保 Agent 有写入权限
+
+- **`contentDir`, `notesDir`, `logsDir`**: 输出目录配置
+  - 相对于 Agent 工作目录的路径
+  - 确保这些目录存在且有写入权限
 
 ## 输出示例
 

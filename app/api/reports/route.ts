@@ -2,13 +2,19 @@ import { NextRequest } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
+interface Report {
+  id: string;
+  content: string;
+  type: string;
+}
+
 // Helper function to read report files
-async function getReports() {
+async function getReports(): Promise<Report[]> {
   try {
     const reportsDir = path.join(process.cwd(), 'content', 'reports');
     const dailyResearchDir = path.join(reportsDir, 'daily-research');
     
-    let reports = [];
+    let reports: Report[] = [];
     
     // Read daily research reports
     if (fs.existsSync(dailyResearchDir)) {

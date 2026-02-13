@@ -5,6 +5,7 @@
   "logsDir": "./content/logs",
   "reportsDir": "./content/reports",
   "syncStateFile": ".sync-state.json",
+  "conversationSource": "/root/.openclaw/agents/main/sessions",
   "similarityThreshold": 0.6,
   "updateThreshold": 0.7,
   "maxTagsPerDocument": 7,
