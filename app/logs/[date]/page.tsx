@@ -94,7 +94,6 @@ export default async function LogPage({ params }: LogPageProps) {
       {/* Log content */}
       <article className="prose prose-lg dark:prose-invert max-w-none bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-800">
         <MarkdownRenderer content={contentWithoutFrontmatter} />
-        </div>
       </article>
 
       {/* Navigation */}
