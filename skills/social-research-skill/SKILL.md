@@ -1,357 +1,315 @@
----
-name: social-research
-description: Research trending topics and real community discussions from Reddit and X (Twitter) in the last 30 days, with content creation and topic suggestions
-argument-hint: 'AI coding tools, React performance tips, best productivity apps'
-allowed-tools: Bash, Read, Write, WebSearch
----
+# SOCIAL-RESEARCH Skill
 
-# Social Research: Discover What Communities Are Actually Discussing
+> 你是被用户调用的研究助手，使用大模型智能分析需求并执行社区研究。
 
-Research ANY topic across Reddit and X (Twitter) to surface real discussions, trending topics, and community feedback from the last 30 days. Get actionable insights with content creation and topic suggestions.
+## 智能工作流
 
-## What This Skill Does
+### 1. 分析用户需求（大模型）
 
-- **Parallel Search**: Simultaneously searches Reddit and X for maximum efficiency
-- **Real Engagement**: Focuses on posts with actual interactions (upvotes, comments, likes, retweets)
-- **Trend Detection**: Identifies rising topics and popular discussions
-- **Content Suggestions**: Provides ready-to-use content ideas and topic angles
-- **Tool Discovery**: Shows how people actually use specific tools in practice
-
-## Use Cases
-
-1. **Tool Research**: "How are people using Cursor AI?" → Real usage patterns and tips
-2. **Trend Spotting**: "What's trending in web development?" → Hot topics and discussions
-3. **Content Ideas**: "React performance optimization" → Popular angles and questions
-4. **Product Feedback**: "Feedback on Notion AI" → Real user experiences
-5. **Competitive Analysis**: "Alternatives to ChatGPT" → What people recommend
-
-## CRITICAL: Parse User Intent
-
-Before starting research, parse the user's input for:
-
-1. **TOPIC**: What they want to research (e.g., "AI coding assistants", "Next.js 14")
-2. **RESEARCH TYPE**:
-   - **USAGE** - "how to use X", "X tips", "X best practices" → User wants practical usage patterns
-   - **TRENDS** - "what's trending", "hot topics", "popular X" → User wants current trends
-   - **COMPARISON** - "X vs Y", "alternatives to X", "best X" → User wants comparisons
-   - **FEEDBACK** - "X reviews", "thoughts on X", "is X good" → User wants opinions
-   - **GENERAL** - anything else → User wants broad understanding
-
-**Store these variables:**
-- `TOPIC = [extracted topic]`
-- `RESEARCH_TYPE = [USAGE | TRENDS | COMPARISON | FEEDBACK | GENERAL]`
-- `TIME_RANGE = last 30 days (default)`
-
-**DISPLAY your parsing to the user:**
-
-```
-I'll research "{TOPIC}" across Reddit and X to find real community discussions from the last 30 days.
-
-Parsed intent:
-- TOPIC: {TOPIC}
-- RESEARCH_TYPE: {RESEARCH_TYPE}
-- TIME_RANGE: {TIME_RANGE}
-
-This typically takes 2-5 minutes. Starting parallel search now...
-```
-
-## Research Execution
-
-### Step 1: Run Parallel Research
+当用户提出研究请求时，首先调用大模型分析：
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/skills/social-research-skill}/scripts/social_research.py" "$ARGUMENTS" --days=30 --min-engagement=5 2>&1
+# 使用对话总结系统获取上下文
+curl -X POST http://localhost:3000/api/summary/search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "用户最近讨论的主题", "search_type": "hybrid", "limit": 10}'
 ```
 
-The script will:
-- Search Reddit (via Reddit API or web scraping)
-- Search X/Twitter (via API or web scraping)
-- Filter for posts with real engagement (upvotes, comments, likes)
-- Rank by relevance and engagement
-- Deduplicate similar content
+**大模型分析任务**：
+```
+输入：
+- 用户的研究请求
+- 最近的对话历史（从summary系统获取）
+- 用户的技术栈和兴趣点
 
-### Step 2: Supplement with WebSearch
+输出JSON：
+{
+  "research_type": "trend_analysis" | "tool_comparison" | "best_practices" | "community_opinion",
+  "search_keywords": ["keyword1", "keyword2", "keyword3"],
+  "platforms": ["reddit", "twitter", "hackernews"],
+  "focus_areas": ["技术实现", "用户体验", "性能对比"],
+  "report_structure": {
+    "sections": ["概述", "社区讨论", "关键发现", "推荐"],
+    "depth": "detailed" | "summary"
+  },
+  "reason": "为什么选择这个研究方向"
+}
+```
 
-While the script runs, do WebSearch to supplement:
+### 2. 执行研究（基于大模型决策）
 
-**For USAGE type:**
-- Search: `{TOPIC} tutorial guide 2026`
-- Search: `{TOPIC} tips tricks examples`
+根据大模型的分析结果执行搜索：
 
-**For TRENDS type:**
-- Search: `{TOPIC} trending 2026`
-- Search: `what's new in {TOPIC}`
+**研究类型**：
 
-**For COMPARISON type:**
-- Search: `{TOPIC} comparison alternatives`
-- Search: `best {TOPIC} 2026`
+1. **Trend Analysis（趋势分析）**
+   - 搜索最近3个月的讨论
+   - 分析热度变化趋势
+   - 识别新兴话题
 
-**For FEEDBACK type:**
-- Search: `{TOPIC} review feedback`
-- Search: `{TOPIC} pros cons`
+2. **Tool Comparison（工具对比）**
+   - 搜索工具对比讨论
+   - 收集用户真实评价
+   - 整理优缺点对比表
 
-## Output Format
+3. **Best Practices（最佳实践）**
+   - 搜索实战经验分享
+   - 收集代码示例
+   - 整理避坑指南
 
-### 1. Executive Summary
+4. **Community Opinion（社区观点）**
+   - 搜索争议性讨论
+   - 收集不同观点
+   - 分析共识和分歧
 
+### 3. 智能内容整合（大模型）
+
+将搜索结果发送给大模型进行整合：
+
+```
+输入：
+- 搜索结果（Reddit、Twitter、HN的讨论）
+- 研究类型和焦点
+- 用户的技术背景
+
+输出：
+- 结构化的研究报告
+- 关键发现总结
+- 个性化建议
+```
+
+## 使用示例
+
+### 场景1：用户想了解某个工具
+
+**用户输入**：
+```
+"帮我研究一下 Cursor 和 GitHub Copilot 的对比，看看社区怎么说"
+```
+
+**大模型分析**：
+```json
+{
+  "research_type": "tool_comparison",
+  "search_keywords": ["Cursor vs Copilot", "Cursor review", "Copilot alternative"],
+  "platforms": ["reddit", "twitter", "hackernews"],
+  "focus_areas": ["功能对比", "价格", "用户体验", "代码质量"],
+  "report_structure": {
+    "sections": ["工具概述", "功能对比", "社区评价", "使用建议"],
+    "depth": "detailed"
+  }
+}
+```
+
+**执行搜索**：
+- Reddit: r/programming, r/vscode
+- Twitter: #Cursor #Copilot
+- HackerNews: "Cursor" OR "Copilot"
+
+**生成报告**：
 ```markdown
-## 🔍 Research Summary: {TOPIC}
+# Cursor vs GitHub Copilot - 社区对比分析
 
-**Key Findings:**
-- [3-5 bullet points of main insights]
+## 工具概述
+[大模型整合的概述]
 
-**Trending Topics:**
-- [Top 3-5 trending subtopics]
+## 功能对比
+| 功能 | Cursor | Copilot |
+|------|--------|---------|
+| ... | ... | ... |
 
-**Community Sentiment:**
-- [Overall sentiment: Positive/Mixed/Negative]
-- [Key themes in discussions]
+## 社区评价
+
+### Reddit 讨论要点
+- 正面评价：...
+- 负面评价：...
+
+### Twitter 用户反馈
+- 高频提及：...
+
+### HackerNews 技术讨论
+- 技术深度：...
+
+## 使用建议
+基于你的技术栈（React, TypeScript），推荐...
 ```
 
-### 2. Top Discussions
+### 场景2：用户想了解技术趋势
 
-```markdown
-## 📊 Top Discussions (by Engagement)
-
-### Reddit
-1. **[Post Title]** (r/subreddit)
-   - 👍 [upvotes] | 💬 [comments]
-   - Key insight: [1-2 sentence summary]
-   - Link: [URL]
-
-2. [...]
-
-### X (Twitter)
-1. **[Tweet excerpt]** (@username)
-   - ❤️ [likes] | 🔄 [retweets] | 💬 [replies]
-   - Key insight: [1-2 sentence summary]
-   - Link: [URL]
-
-2. [...]
+**用户输入**：
+```
+"React Server Components 现在社区接受度怎么样？"
 ```
 
-### 3. Trending Topics & Themes
-
-```markdown
-## 🔥 Trending Topics
-
-1. **[Topic Name]** (mentioned in X posts)
-   - What people are saying: [summary]
-   - Example discussions: [links]
-
-2. [...]
-
-## 💡 Common Themes
-
-- **[Theme 1]**: [description and frequency]
-- **[Theme 2]**: [description and frequency]
-- **[Theme 3]**: [description and frequency]
+**大模型分析**：
+```json
+{
+  "research_type": "trend_analysis",
+  "search_keywords": ["React Server Components", "RSC adoption", "RSC production"],
+  "platforms": ["reddit", "twitter", "hackernews"],
+  "focus_areas": ["采用率", "实战经验", "性能提升", "学习曲线"],
+  "report_structure": {
+    "sections": ["技术概述", "采用趋势", "实战案例", "社区观点", "建议"],
+    "depth": "detailed"
+  }
+}
 ```
 
-### 4. Content Creation Suggestions
+### 场景3：用户想学习最佳实践
 
-```markdown
-## ✍️ Content Ideas & Topic Suggestions
-
-Based on community discussions, here are content angles that would resonate:
-
-### Blog Post Ideas
-1. **"[Title based on trending question]"**
-   - Angle: [approach]
-   - Why it works: [reason based on data]
-   - Target audience: [who's asking]
-
-2. [...]
-
-### Social Media Posts
-1. **Thread idea**: [topic]
-   - Hook: [opening line]
-   - Key points: [3-5 bullets]
-   - CTA: [call to action]
-
-2. [...]
-
-### Video/Tutorial Ideas
-1. **"[Title]"**
-   - Format: [tutorial/review/comparison]
-   - Key sections: [outline]
-   - Estimated interest: [based on engagement data]
-
-2. [...]
+**用户输入**：
+```
+"大型 Next.js 应用有什么架构最佳实践？"
 ```
 
-### 5. Tool Usage Patterns (if applicable)
-
-```markdown
-## 🛠️ How People Are Using {TOOL}
-
-### Common Use Cases
-1. **[Use case]** (mentioned X times)
-   - Example: [quote from discussion]
-   - Tips shared: [community tips]
-
-2. [...]
-
-### Popular Workflows
-- [Workflow 1]: [description]
-- [Workflow 2]: [description]
-
-### Pain Points & Solutions
-- **Pain point**: [issue]
-  - Community solutions: [solutions discussed]
+**大模型分析**：
+```json
+{
+  "research_type": "best_practices",
+  "search_keywords": ["Next.js architecture", "Next.js large scale", "Next.js best practices"],
+  "platforms": ["reddit", "twitter", "hackernews"],
+  "focus_areas": ["项目结构", "状态管理", "性能优化", "部署策略"],
+  "report_structure": {
+    "sections": ["架构模式", "实战经验", "常见问题", "推荐方案"],
+    "depth": "detailed"
+  }
+}
 ```
 
-### 6. Recommendations
+## API接口设计
 
-```markdown
-## 🎯 Actionable Recommendations
+### POST /api/social-research/analyze
 
-### For Content Creators
-- Focus on: [topics with high engagement]
-- Avoid: [oversaturated topics]
-- Timing: [when to post based on trends]
+分析用户需求并生成研究计划
 
-### For Product Teams
-- Feature requests: [top requests from community]
-- User feedback: [common feedback themes]
-- Competitive insights: [what users compare]
-
-### For Marketers
-- Messaging angles: [what resonates]
-- Target audiences: [who's discussing]
-- Distribution channels: [where discussions happen]
+**请求**：
+```json
+{
+  "query": "用户的研究请求",
+  "context": {
+    "recent_topics": ["topic1", "topic2"],
+    "tech_stack": ["react", "typescript"],
+    "user_level": "intermediate"
+  }
+}
 ```
 
-## Advanced Features
+**响应**：
+```json
+{
+  "success": true,
+  "research_plan": {
+    "research_type": "tool_comparison",
+    "search_keywords": [...],
+    "platforms": [...],
+    "focus_areas": [...],
+    "estimated_time": "5-10分钟"
+  }
+}
+```
 
-### Engagement Filtering
+### POST /api/social-research/execute
 
-The script automatically filters for quality:
-- Reddit: Minimum 5 upvotes, 2 comments
-- X: Minimum 5 likes or 2 retweets
-- Adjustable via `--min-engagement` flag
+执行研究并生成报告
 
-### Time-based Analysis
+**请求**：
+```json
+{
+  "research_plan": { ... },
+  "options": {
+    "max_results": 50,
+    "time_range": "3months",
+    "include_code": true
+  }
+}
+```
 
-Track how discussions evolve:
-- Week 1 vs Week 4 comparison
-- Trending up vs trending down
-- Seasonal patterns
+**响应**：
+```json
+{
+  "success": true,
+  "report": {
+    "title": "研究报告标题",
+    "summary": "核心发现摘要",
+    "content": "完整的Markdown内容",
+    "sources": [...],
+    "key_findings": [...]
+  }
+}
+```
 
-### Sentiment Analysis
+## 工作流程图
 
-Understand community sentiment:
-- Positive mentions
-- Negative mentions
-- Mixed/neutral discussions
+```
+用户请求
+    ↓
+大模型分析需求
+    ↓
+生成研究计划
+    ↓
+并行搜索（Reddit + Twitter + HN）
+    ↓
+大模型整合内容
+    ↓
+生成个性化报告
+    ↓
+保存到 content/reports/
+```
 
-## Configuration
+## 配置
 
-### Environment Variables
+编辑 `social-research-config.json`：
+
+```json
+{
+  "llm": {
+    "model": "qwen-plus",
+    "temperature": 0.3,
+    "max_tokens": 2000
+  },
+  "search": {
+    "max_results_per_platform": 20,
+    "time_range": "3months",
+    "min_quality_score": 0.6
+  },
+  "report": {
+    "min_word_count": 1500,
+    "max_word_count": 4000,
+    "include_code_examples": true,
+    "include_statistics": true
+  }
+}
+```
+
+## 优势
+
+**vs 传统方式**：
+- ❌ 固定的搜索关键词
+- ❌ 统一的报告结构
+- ❌ 无法理解用户意图
+
+**智能工作流**：
+- ✅ 大模型理解用户真实需求
+- ✅ 动态生成搜索策略
+- ✅ 个性化报告结构
+- ✅ 基于用户背景的建议
+- ✅ 减轻Agent工作负担
+
+## 使用方法
 
 ```bash
-# Reddit API (optional, falls back to web scraping)
-REDDIT_CLIENT_ID=your_client_id
-REDDIT_CLIENT_SECRET=your_secret
-REDDIT_USER_AGENT=your_app_name
+# 方式1：通过API
+curl -X POST http://localhost:3000/api/social-research/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"query": "Cursor vs Copilot 对比"}'
 
-# X/Twitter API (optional, falls back to web scraping)
-TWITTER_BEARER_TOKEN=your_bearer_token
-
-# OpenAI for analysis (optional)
-OPENAI_API_KEY=your_api_key
+# 方式2：在对话中直接请求
+"帮我研究一下 [主题]"
 ```
 
-### Script Options
+## 注意事项
 
-```bash
---days=N              # Days to look back (default: 30)
---min-engagement=N    # Minimum engagement threshold (default: 5)
---max-results=N       # Maximum results per platform (default: 50)
---include-comments    # Include comment analysis
---sentiment           # Enable sentiment analysis
---export=FORMAT       # Export format: json|csv|md (default: md)
-```
-
-## Examples
-
-### Example 1: Tool Research
-
-**Input**: "How are people using Cursor AI?"
-
-**Output**:
-- 45 Reddit discussions analyzed
-- 78 X posts analyzed
-- Top use cases: Code completion, debugging, refactoring
-- Content ideas: "5 Cursor AI workflows that save hours", "Cursor vs GitHub Copilot"
-
-### Example 2: Trend Spotting
-
-**Input**: "What's trending in React development?"
-
-**Output**:
-- Server Components (mentioned 156 times)
-- React 19 features (mentioned 89 times)
-- Performance optimization (mentioned 67 times)
-- Content ideas: "React Server Components explained", "Migrating to React 19"
-
-### Example 3: Product Feedback
-
-**Input**: "Feedback on Notion AI"
-
-**Output**:
-- Positive: Fast, helpful for brainstorming (67%)
-- Negative: Limited customization, expensive (23%)
-- Mixed: Good but needs improvement (10%)
-- Content ideas: "Notion AI review after 30 days", "Is Notion AI worth it?"
-
-## Best Practices
-
-1. **Be Specific**: "React performance tips" > "React"
-2. **Use Quotes**: "AI coding tools" for exact phrase matching
-3. **Combine Keywords**: "Next.js AND performance" for focused results
-4. **Check Recency**: Default is 30 days, adjust if needed
-5. **Review Engagement**: Higher engagement = more valuable insights
-
-## Limitations
-
-- Rate limits: Respect API rate limits (built-in throttling)
-- Data freshness: Up to 24 hours delay for some sources
-- Language: Primarily English content
-- Access: Some content may require authentication
-
-## Troubleshooting
-
-**No results found:**
-- Try broader keywords
-- Reduce time range
-- Lower engagement threshold
-
-**Too many results:**
-- Be more specific
-- Increase engagement threshold
-- Reduce time range
-
-**API errors:**
-- Check API credentials
-- Verify rate limits
-- Falls back to web scraping automatically
-
-## Output Files
-
-Results are saved to:
-- `~/.claude/skills/social-research-skill/output/{timestamp}_{topic}.md`
-- JSON export: `{timestamp}_{topic}.json`
-- CSV export: `{timestamp}_{topic}.csv`
-
-## Integration with Other Skills
-
-This skill works well with:
-- **last30days**: For broader web research
-- **content-writer**: To create content from insights
-- **trend-analyzer**: For deeper trend analysis
-
----
-
-**Note**: This skill respects platform terms of service and implements rate limiting. Always review and verify insights before using them.
-
+- 大模型会自动获取用户的技术背景（从summary系统）
+- 搜索结果会根据质量评分过滤
+- 报告会根据用户技术水平调整深度
+- 所有报告保存到 `content/reports/social-research/`
