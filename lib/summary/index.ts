@@ -30,6 +30,9 @@ export { clusteringEngine, ClusteringEngine } from './clustering-engine';
 // Markdown转换器
 export { MarkdownConverter } from './markdown-converter';
 
+// 智能合并器
+export { IntelligentMerger } from './intelligent-merger';
+
 // 工具函数
 export * from './utils';
 
