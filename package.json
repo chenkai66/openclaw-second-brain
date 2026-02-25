@@ -11,6 +11,7 @@
     "lint": "next lint",
     "summary:init": "node scripts/init-summary-system.js",
     "summary:test": "node scripts/test-summary-system.js",
+    "summary:test-convert": "node scripts/test-convert-api.js",
     "summary:process": "curl -X POST http://localhost:3000/api/summary/process",
     "summary:convert": "curl -X POST http://localhost:3000/api/summary/convert",
     "summary:pipeline": "node scripts/full-pipeline.js",
