@@ -299,10 +299,30 @@ openclaw cron run <job-id>
 
 ## 📝 对话总结系统
 
+### 完整数据管道
+
+```
+对话历史 (.jsonl) → API处理 → 摘要数据 (JSON) → Markdown转换 → 前端展示 (Notes/Logs)
+```
+
+**快速开始**:
+```bash
+# 1. 初始化系统
+npm run summary:init
+
+# 2. 启动服务器
+npm run dev
+
+# 3. 执行完整数据管道（自动完成所有步骤）
+npm run summary:pipeline
+```
+
+详细文档请查看 [DATA_PIPELINE.md](./DATA_PIPELINE.md)
+
 ### 系统架构
 
 ```
-对话数据源 → 对话处理器 → 多阶段摘要 → 存储层
+对话数据源 → 对话处理器 → 多阶段摘要 → Markdown转换 → 前端展示
     ↓           ↓              ↓          ↓
 OpenClaw    LLM生成摘要    三层树形结构   JSON文件
 会话目录    智能聚类       Domain/Topic   索引加速

@@ -27,6 +27,9 @@ export { summaryRetriever, SummaryRetriever } from './summary-retriever';
 // 聚类引擎
 export { clusteringEngine, ClusteringEngine } from './clustering-engine';
 
+// Markdown转换器
+export { MarkdownConverter } from './markdown-converter';
+
 // 工具函数
 export * from './utils';
 

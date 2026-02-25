@@ -12,6 +12,8 @@
     "summary:init": "node scripts/init-summary-system.js",
     "summary:test": "node scripts/test-summary-system.js",
     "summary:process": "curl -X POST http://localhost:3000/api/summary/process",
+    "summary:convert": "curl -X POST http://localhost:3000/api/summary/convert",
+    "summary:pipeline": "node scripts/full-pipeline.js",
     "summary:stats": "curl http://localhost:3000/api/summary/stats | jq .",
     "summary:tree": "curl http://localhost:3000/api/summary/tree | jq ."
   },

@@ -1,26 +1,48 @@
 # KNOWLEDGE-AGENT Skill Document
 
-> **重要提示**：你是被定时任务调用的子 Agent。你的唯一职责是调用对话总结系统API。
+> **重要提示**：你是被定时任务调用的子 Agent。你的唯一职责是执行完整的数据管道。
 > 
 > **禁止操作**：不要创建、修改或管理任何定时任务（cron jobs）。定时任务由主 Agent 管理。
 
 ## Agent 职责
-KNOWLEDGE-AGENT 负责调用对话总结系统API，自动处理新对话并生成多阶段摘要。
+KNOWLEDGE-AGENT 负责执行完整的对话总结数据管道：
+1. 读取对话历史
+2. 调用大模型生成摘要
+3. 智能聚类和分类
+4. 转换为Markdown文件
+5. 更新同步状态
 
 ## 执行说明
 - 你会被定时任务每小时调用一次
-- 每次执行时，调用 `/api/summary/process` API
-- 系统会自动处理所有未处理的对话
+- 每次执行时，运行完整数据管道脚本
+- 系统会自动完成所有步骤
 
 ## 工作流程
 
-### 简单执行步骤
+### 一键执行（推荐）
 
 ```bash
-# 调用API处理新对话
+# 执行完整数据管道
+npm run summary:pipeline
+```
+
+这个命令会自动完成所有步骤，无需手动干预。
+
+### 手动分步执行（调试用）
+
+如果需要分步调试：
+
+```bash
+# 步骤1: 处理对话，生成摘要
 curl -X POST http://localhost:3000/api/summary/process \
   -H "Content-Type: application/json" \
   -d '{"batch_size": 10}'
+
+# 步骤2: 转换为Markdown文件
+curl -X POST http://localhost:3000/api/summary/convert
+
+# 步骤3: 查看统计信息
+curl http://localhost:3000/api/summary/stats
 ```
 
 ### API响应示例
