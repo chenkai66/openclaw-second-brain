@@ -9,12 +9,47 @@ RESEARCH-AGENT 负责分析用户的对话记录，发现兴趣点和知识需�
 
 ## 执行说明
 - 你会被定时任务每天 23:00 调用一次
-- 每次执行时，读取 `config.json` 获取配置参数
+- 可以使用对话总结系统API获取热门主题和关键词
 - 专注于你的核心职责：分析兴趣、搜索资讯、生成报告
+
+## 使用对话总结系统
+
+### 获取热门主题
+
+```bash
+# 获取统计信息（包含热门主题和关键词）
+curl http://localhost:3000/api/summary/stats?period=week
+```
+
+响应示例：
+```json
+{
+  "top_topics": [
+    {
+      "id": "topic_001",
+      "name": "React Performance",
+      "conversation_count": 5
+    }
+  ],
+  "top_keywords": [
+    {"keyword": "react", "count": 10},
+    {"keyword": "performance", "count": 8}
+  ]
+}
+```
+
+### 搜索相关对话
+
+```bash
+# 搜索特定主题的对话
+curl -X POST http://localhost:3000/api/summary/search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "React performance", "search_type": "hybrid", "limit": 10}'
+```
 
 ## 中间产物存储
 
-**重要**：你的执行过程中产生的中间产物（兴趣分析、搜索结果、内容整合等）应该保存到：
+**重要**：你的执行过程中产生的中间产物应该保存到：
 
 ```
 .agent-workspace/research-agent/
@@ -23,31 +58,14 @@ RESEARCH-AGENT 负责分析用户的对话记录，发现兴趣点和知识需�
 ### 建议保存的内容
 
 1. **执行日志**：`execution-YYYY-MM-DD.log`
-   - 每次执行的详细日志
-   - 分析了哪些内容
-   - 搜索了哪些主题
-
 2. **兴趣分析**：`interest-analysis-YYYY-MM-DD.json`
-   - 提取的兴趣点列表
-   - 每个兴趣点的评分
-   - 选择研究主题的理由
-
 3. **搜索结果**：`search-results-YYYY-MM-DD.json`
-   - 各个搜索源的原始结果
-   - 筛选和排序过程
-   - 选择的文章列表
-
 4. **内容整合**：`content-aggregation-YYYY-MM-DD.json`
-   - 提取的核心观点
-   - 去重和提炼过程
-   - 报告大纲
 
 ### 重要说明
 
 - ⚠️ `.agent-workspace/` 目录的内容**不会**被网页应用加载
 - 这些文件仅用于观察你的行为轨迹和调试
-- 你可以自由写入任何对调试有帮助的信息
-- 旧文件会被自动清理，不用担心占用空间
 
 ## 工作流程
 

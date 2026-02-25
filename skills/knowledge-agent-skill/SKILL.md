@@ -1,120 +1,122 @@
 # KNOWLEDGE-AGENT Skill Document
 
-> **重要提示**：你是被定时任务调用的子 Agent。你的唯一职责是执行知识同步工作。
+> **重要提示**：你是被定时任务调用的子 Agent。你的唯一职责是调用对话总结系统API。
 > 
 > **禁止操作**：不要创建、修改或管理任何定时任务（cron jobs）。定时任务由主 Agent 管理。
 
 ## Agent 职责
-KNOWLEDGE-AGENT 负责自动同步和整理用户与 AI 的对话记录，将对话转化为结构化的知识库内容（Notes 和 Logs）。
+KNOWLEDGE-AGENT 负责调用对话总结系统API，自动处理新对话并生成多阶段摘要。
 
 ## 执行说明
 - 你会被定时任务每小时调用一次
-- 每次执行时，读取 `config.json` 获取配置参数
-- 专注于你的核心职责：同步和整理知识
-
-## 中间产物存储
-
-**重要**：你的执行过程中产生的中间产物（分析结果、决策记录、执行日志等）应该保存到：
-
-```
-.agent-workspace/knowledge-agent/
-```
-
-### 建议保存的内容
-
-1. **执行日志**：`execution-YYYY-MM-DD-HH-mm-ss.log`
-   - 每次执行的详细日志
-   - 处理了哪些对话
-   - 做了哪些决策
-
-2. **分析结果**：`analysis-YYYY-MM-DD-HH-mm-ss.json`
-   - 对话内容分析
-   - 标签匹配结果
-   - 相似度计算
-
-3. **决策记录**：`decisions-YYYY-MM-DD-HH-mm-ss.json`
-   - 为什么选择更新某个Note
-   - 为什么创建新的Log
-   - 标签选择的理由
-
-### 重要说明
-
-- ⚠️ `.agent-workspace/` 目录的内容**不会**被网页应用加载
-- 这些文件仅用于观察你的行为轨迹和调试
-- 你可以自由写入任何对调试有帮助的信息
-- 旧文件会被自动清理，不用担心占用空间
+- 每次执行时，调用 `/api/summary/process` API
+- 系统会自动处理所有未处理的对话
 
 ## 工作流程
 
-### 1. 检查未同步对话
-```
-1. 读取同步状态文件：.sync-state.json
-   {
-     "lastSyncTimestamp": "2026-02-13T21:30:00Z",
-     "lastProcessedConversationId": "conv_12345"
-   }
+### 简单执行步骤
 
-2. 获取最新对话记录（从 lastSyncTimestamp 之后）
-3. 如果没有新对话，退出
-4. 如果有新对话，继续处理
+```bash
+# 调用API处理新对话
+curl -X POST http://localhost:3000/api/summary/process \
+  -H "Content-Type: application/json" \
+  -d '{"batch_size": 10}'
 ```
 
-### 2. 分析对话内容
-```
-对每个新对话执行：
+### API响应示例
 
-A. 提取关键信息
-   - 主题/话题
-   - 技术栈/标签
-   - 问题类型（学习、调试、架构设计等）
-   - 代码示例
-   - 解决方案
-
-B. 判断内容类型
-   - 深度技术讨论 → 创建/更新 Note
-   - 问题解决过程 → 创建 Log
-   - 快速问答 → 追加到相关 Log
+```json
+{
+  "success": true,
+  "processed_count": 5,
+  "new_conversations": 5,
+  "updated_topics": 2,
+  "updated_domains": 1,
+  "errors": [],
+  "duration_ms": 15000
+}
 ```
 
-### 3. 查找相关已有内容
+## 系统功能
+
+对话总结系统会自动完成以下工作：
+
+### 1. 自动摘要生成
+- 调用大模型为每个对话生成摘要
+- 提取关键词（英文）
+- 分析情感倾向
+
+### 2. 智能聚类
+- 计算对话相似度
+- 自动分配到相关主题
+- 创建新主题（如果需要）
+- 聚合主题到领域
+
+### 3. 多阶段摘要
 ```
-A. 标签匹配
-   - 读取所有现有 Notes 和 Logs 的标签
-   - 计算标签相似度（使用 Jaccard 相似度或语义相似度）
-   - 如果相似度 > 0.6，认为是相关内容
-
-B. 主题匹配
-   - 提取对话的核心主题关键词
-   - 在现有内容中搜索相同主题
-   - 使用语义搜索找到最相关的文档
-
-C. 项目匹配
-   - 识别对话中提到的项目名称（如 "second brain"）
-   - 查找该项目相关的所有文档
-   - 优先更新项目相关文档
-```
-
-### 4. 内容整合策略
-
-#### 策略 A：更新现有 Note
-```
-条件：
-- 找到高度相关的 Note（相似度 > 0.7）
-- 对话内容是对现有知识的补充或深化
-
-操作：
-1. 读取现有 Note
-2. 识别合适的插入位置
-   - 如果是 FAQ 类问题 → 添加到 FAQ 章节
-   - 如果是新的子主题 → 创建新的二级标题
-   - 如果是补充说明 → 追加到相关段落
-3. 保持原有结构和格式
-4. 更新 frontmatter 的 updated 字段和 tags
+Domain (领域)
+  ├── Topic (主题)
+  │   ├── Conversation (对话)
+  │   ├── Conversation
+  │   └── Conversation
+  └── Topic
+      └── ...
 ```
 
-#### 策略 B：创建新 Log
+### 4. 试错机制
+- 自动重试（最多3次）
+- 指数退避策略
+- 降级处理（简化提示词）
+- 详细错误日志
+
+### 5. 时间戳管理
+- 增量处理（只处理新对话）
+- 断点续传
+- 处理历史记录
+
+## 中间产物存储
+
+系统自动将处理结果保存到：
+
 ```
-条件：
+data/summaries/
+├── summaries.json          # 树形摘要结构
+├── summary-index.json      # 快速检索索引
+├── summary-metadata.json   # 元数据和统计
+└── backups/                # 自动备份
+```
+
+## 执行日志
+
+查看处理统计：
+
+```bash
+curl http://localhost:3000/api/summary/stats
+```
+
+## 配置说明
+
+编辑 `summary-config.json` 调整系统行为：
+
+```json
+{
+  "llm": {
+    "model": "qwen-plus",
+    "max_retries": 3
+  },
+  "processing": {
+    "batch_size": 10,
+    "max_concurrent": 3
+  },
+  "clustering": {
+    "similarity_threshold": 0.7
+  }
+}
+```
+
+---
+
+**注意**：旧的手动处理流程已被对话总结系统取代。现在只需调用API即可自动完成所有工作。
 - 对话是完整的问题解决过程
 - 包含用户提问和 AI 详细回答
 - 有实用的代码示例或解决方案

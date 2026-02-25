@@ -297,6 +297,105 @@ openclaw cron run <job-id>
 
 ---
 
+## 📝 对话总结系统
+
+### 系统架构
+
+```
+对话数据源 → 对话处理器 → 多阶段摘要 → 存储层
+    ↓           ↓              ↓          ↓
+OpenClaw    LLM生成摘要    三层树形结构   JSON文件
+会话目录    智能聚类       Domain/Topic   索引加速
+           试错重试       /Conversation   备份恢复
+```
+
+### 核心功能
+
+- **自动摘要生成** - 调用大模型为每个对话生成摘要、提取关键词、分析情感
+- **智能聚类** - 自动将相似对话聚合为主题，将相似主题聚合为领域
+- **多阶段摘要** - 三层树形结构（领域 → 主题 → 对话），每层都有独立摘要
+- **试错机制** - 自动重试（3次）、指数退避、降级处理
+- **时间戳管理** - 增量处理、断点续传、处理历史记录
+- **丰富API** - 10+个API接口，支持搜索、统计、推荐等
+
+### 快速使用
+
+```typescript
+// 1. 初始化系统
+import { initializeSummarySystem, quickProcess } from '@/lib/summary';
+await initializeSummarySystem();
+
+// 2. 处理对话
+const result = await quickProcess();
+console.log(`处理了 ${result.processed} 个对话`);
+
+// 3. 搜索
+import { quickSearch } from '@/lib/summary';
+const results = await quickSearch('React hooks', { searchType: 'hybrid' });
+```
+
+### API接口
+
+```bash
+# 处理新对话
+POST /api/summary/process
+
+# 搜索摘要（支持关键词/语义/混合搜索）
+POST /api/summary/search
+
+# 获取摘要树（三层结构）
+GET /api/summary/tree?depth=3
+
+# 获取统计信息
+GET /api/summary/stats
+
+# 智能推荐
+GET /api/summary/recommend?conversation_id=xxx
+
+# 触发聚类
+POST /api/summary/cluster
+
+# 获取对话详情
+GET /api/summary/conversation/[id]
+
+# 重建索引
+POST /api/summary/rebuild-index
+```
+
+### 配置文件
+
+编辑 `summary-config.json`：
+
+```json
+{
+  "llm": {
+    "model": "qwen-plus",
+    "max_retries": 3,
+    "temperature": 0.7
+  },
+  "processing": {
+    "batch_size": 10,
+    "max_concurrent": 3
+  },
+  "clustering": {
+    "similarity_threshold": 0.7,
+    "min_cluster_size": 3
+  }
+}
+```
+
+### 数据结构
+
+```
+data/summaries/
+├── summaries.json          # 树形摘要结构
+├── summary-index.json      # 快速检索索引
+├── summary-metadata.json   # 元数据和统计
+└── backups/                # 自动备份
+```
+
+---
+
 ## 🚧 开发路线图
 
 ### v1.0 (当前版本)
@@ -304,6 +403,7 @@ openclaw cron run <job-id>
 - [x] 全文搜索和标签系统
 - [x] 知识图谱可视化
 - [x] AI自动化Agent系统
+- [x] 对话总结与多阶段摘要系统
 
 ### v1.1 (计划中)
 - [ ] 多语言支持（英文/中文切换）

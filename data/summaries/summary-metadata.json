@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "statistics": {
+    "total_conversations": 0,
+    "total_topics": 0,
+    "total_domains": 0,
+    "last_processed_timestamp": "2026-02-25T03:48:40.280Z",
+    "processing_history": []
+  },
+  "sync_state": {
+    "last_sync_timestamp": "2026-02-25T03:45:24.944Z",
+    "last_processed_conversation_id": "",
+    "pending_conversations": []
+  }
+}

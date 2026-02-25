@@ -8,7 +8,12 @@
     "build": "next build",
     "start": "next start",
     "start:8000": "next start -p 8000",
-    "lint": "next lint"
+    "lint": "next lint",
+    "summary:init": "node scripts/init-summary-system.js",
+    "summary:test": "node scripts/test-summary-system.js",
+    "summary:process": "curl -X POST http://localhost:3000/api/summary/process",
+    "summary:stats": "curl http://localhost:3000/api/summary/stats | jq .",
+    "summary:tree": "curl http://localhost:3000/api/summary/tree | jq ."
   },
   "dependencies": {
     "@types/react-syntax-highlighter": "^15.5.13",
