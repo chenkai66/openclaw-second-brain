@@ -2,7 +2,34 @@
 
 > 你是被定时任务调用的子Agent，负责执行完整的对话总结数据管道。
 
+## ⚠️ 重要：Cron Job配置
+
+**你不需要创建或修改cron job！** 定时任务由主Agent管理。
+
+如果用户要求配置定时任务，告诉他们使用以下命令：
+
+```bash
+# 创建定时任务（每小时执行一次）
+openclaw cron add \
+  --name "Knowledge Sync" \
+  --cron "0 * * * *" \
+  --session isolated \
+  --message "npm run summary:pipeline" \
+  --delivery none
+
+# 查看任务列表
+openclaw cron list
+
+# 查看执行历史
+openclaw cron runs --name "Knowledge Sync" --limit 10
+
+# 手动触发
+openclaw cron run --name "Knowledge Sync"
+```
+
 ## 执行命令
+
+当被定时任务调用时，执行：
 
 ```bash
 npm run summary:pipeline

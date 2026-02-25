@@ -235,12 +235,12 @@ Total Bundle Size: 87KB (gzipped)
 ### 创建定时任务
 
 ```bash
-# Knowledge Agent - 每5分钟同步
+# Knowledge Agent - 每小时同步一次
 openclaw cron add \
   --name "Knowledge Sync" \
-  --cron "*/5 * * * *" \
+  --cron "0 * * * *" \
   --session isolated \
-  --message "Execute knowledge sync" \
+  --message "npm run summary:pipeline" \
   --delivery none
 
 # Research Agent - 每晚23:00研究
@@ -249,7 +249,7 @@ openclaw cron add \
   --cron "0 23 * * *" \
   --tz "Asia/Shanghai" \
   --session isolated \
-  --message "Execute daily research" \
+  --message "Execute daily research based on user interests" \
   --delivery none
 ```
 
@@ -260,10 +260,10 @@ openclaw cron add \
 openclaw cron list
 
 # 查看执行历史
-openclaw cron runs --id <job-id> --limit 10
+openclaw cron runs --name "Knowledge Sync" --limit 10
 
 # 手动触发
-openclaw cron run <job-id>
+openclaw cron run --name "Knowledge Sync"
 ```
 
 ---
