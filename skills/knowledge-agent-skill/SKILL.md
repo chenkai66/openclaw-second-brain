@@ -6,7 +6,21 @@
 
 **你不需要创建或修改cron job！** 定时任务由主Agent管理。
 
-如果用户要求配置定时任务，告诉他们使用以下命令：
+如果用户要求配置定时任务，告诉他们：
+
+### 第一步：查找项目路径
+
+```bash
+# 常见安装位置（按优先级检查）
+ls -la ~/openclaw/workspace/openclaw-second-brain 2>/dev/null || \
+ls -la /root/openclaw-second-brain 2>/dev/null || \
+ls -la ~/openclaw-second-brain 2>/dev/null || \
+find ~ -type d -name "openclaw-second-brain" 2>/dev/null | head -1
+```
+
+### 第二步：创建定时任务
+
+将下面的 `<PROJECT_PATH>` 替换为上一步找到的实际路径：
 
 ```bash
 # 创建定时任务（每小时执行一次）
@@ -14,7 +28,7 @@ openclaw cron add \
   --name "Knowledge Sync" \
   --cron "0 * * * *" \
   --session isolated \
-  --message "cd /root/openclaw-second-brain && npm run summary:pipeline" \
+  --message "cd <PROJECT_PATH> && npm run summary:pipeline" \
   --delivery none
 
 # 查看任务列表
@@ -27,16 +41,24 @@ openclaw cron runs --name "Knowledge Sync" --limit 10
 openclaw cron run --name "Knowledge Sync"
 ```
 
-**注意**：将 `/root/openclaw-second-brain` 替换为实际的项目路径。
+**常见路径示例**：
+- `~/openclaw/workspace/openclaw-second-brain`
+- `/root/openclaw-second-brain`
+- `~/openclaw-second-brain`
 
 ## 执行命令
 
 当被定时任务调用时，在项目目录执行：
 
 ```bash
-cd /root/openclaw-second-brain
+cd <PROJECT_PATH>
 npm run summary:pipeline
 ```
+
+**注意**：`<PROJECT_PATH>` 是项目的实际安装路径，可能是：
+- `~/openclaw/workspace/openclaw-second-brain`
+- `/root/openclaw-second-brain`
+- `~/openclaw-second-brain`
 
 这个脚本会自动完成：
 1. 检查服务器是否运行（http://localhost:3000）

@@ -234,13 +234,25 @@ Total Bundle Size: 87KB (gzipped)
 
 ### 创建定时任务
 
+**第一步：查找项目路径**
+
+```bash
+# 常见安装位置（按优先级检查）
+ls -la ~/openclaw/workspace/openclaw-second-brain 2>/dev/null || \
+ls -la /root/openclaw-second-brain 2>/dev/null || \
+ls -la ~/openclaw-second-brain 2>/dev/null || \
+find ~ -type d -name "openclaw-second-brain" 2>/dev/null | head -1
+```
+
+**第二步：创建任务（替换 `<PROJECT_PATH>` 为实际路径）**
+
 ```bash
 # Knowledge Agent - 每小时同步一次
 openclaw cron add \
   --name "Knowledge Sync" \
   --cron "0 * * * *" \
   --session isolated \
-  --message "cd /root/openclaw-second-brain && npm run summary:pipeline" \
+  --message "cd <PROJECT_PATH> && npm run summary:pipeline" \
   --delivery none
 
 # Research Agent - 每晚23:00研究
@@ -249,11 +261,14 @@ openclaw cron add \
   --cron "0 23 * * *" \
   --tz "Asia/Shanghai" \
   --session isolated \
-  --message "cd /root/openclaw-second-brain && Execute daily research based on user interests" \
+  --message "cd <PROJECT_PATH> && Execute daily research based on user interests" \
   --delivery none
 ```
 
-**注意**：将 `/root/openclaw-second-brain` 替换为实际的项目路径。
+**常见路径示例**：
+- `~/openclaw/workspace/openclaw-second-brain`
+- `/root/openclaw-second-brain`
+- `~/openclaw-second-brain`
 
 ### 查看Agent执行历史
 
