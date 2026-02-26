@@ -550,25 +550,35 @@ POST /api/summary/rebuild-index
 ```json
 {
   "llm": {
-    "model": "qwen-plus",
+    "model": "qwen3-max-2026-01-23",
     "max_retries": 3,
     "temperature": 0.7
   },
   "processing": {
     "batch_size": 10,
     "max_concurrent": 3,
-    "delay_ms": 1000
+    "min_conversation_length": 50
   },
   "clustering": {
     "similarity_threshold": 0.7,
     "min_cluster_size": 3
   },
   "intelligent_merger": {
+    "min_conversation_length_for_note": 200,
+    "min_keyword_count": 3,
+    "strict_mode": true,
     "max_content_length": 3000,
     "max_keywords": 10
   }
 }
 ```
+
+**智能合并配置说明**：
+- `min_conversation_length_for_note`: 创建笔记的最小对话长度（字符数）
+- `min_keyword_count`: 创建笔记需要的最少关键词数量
+- `strict_mode`: 严格模式，更保守地创建笔记
+- 大部分日常对话会被标记为 `create_log_only`，只保存到日志
+- 只有真正有价值的知识才会创建笔记
 
 ### 数据结构
 

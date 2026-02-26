@@ -31,6 +31,14 @@
     "backup_interval_hours": 24,
     "max_backups": 7,
     "compression_enabled": false
+  },
+  "intelligent_merger": {
+    "min_conversation_length_for_note": 200,
+    "min_keyword_count": 3,
+    "require_code_or_solution": false,
+    "max_content_length": 3000,
+    "max_keywords": 10,
+    "strict_mode": true
   }
 }
 
