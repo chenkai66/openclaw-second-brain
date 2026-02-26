@@ -20,8 +20,6 @@ find ~ -type d -name "openclaw-second-brain" 2>/dev/null | head -1
 
 ### 第二步：创建定时任务
 
-将下面的 `<PROJECT_PATH>` 替换为上一步找到的实际路径：
-
 ```bash
 # 创建定时任务（每小时执行一次）
 openclaw cron add \
@@ -30,7 +28,13 @@ openclaw cron add \
   --session isolated \
   --message "cd <PROJECT_PATH> && npm run agent:knowledge" \
   --delivery none
+```
 
+将 `<PROJECT_PATH>` 替换为第一步找到的实际路径。
+
+### 管理任务
+
+```bash
 # 查看任务列表
 openclaw cron list
 
@@ -41,41 +45,19 @@ openclaw cron runs --name "Knowledge Sync" --limit 10
 openclaw cron run --name "Knowledge Sync"
 ```
 
-**常见路径示例**：
-- `~/openclaw/workspace/openclaw-second-brain`
-- `/root/openclaw-second-brain`
-- `~/openclaw-second-brain`
-
 ## 执行命令
 
-当被定时任务调用时，在项目目录执行：
-
 ```bash
-cd <PROJECT_PATH>
 npm run agent:knowledge
 ```
-
-**注意**：`<PROJECT_PATH>` 是项目的实际安装路径，可能是：
-- `~/openclaw/workspace/openclaw-second-brain`
-- `/root/openclaw-second-brain`
-- `~/openclaw-second-brain`
 
 这个脚本会自动完成：
 1. **初始化系统** - 验证配置，确保目录存在
 2. **处理对话** - 读取未处理的对话，生成摘要，智能分类
 3. **转换Markdown** - 创建/更新Notes和Logs文件
-4. **创建备份** - 自动备份数据（保留最近N个备份）
-5. **统计分析** - 返回完整的系统统计和处理历史
+4. **创建备份** - 自动备份数据
+5. **统计分析** - 返回完整的系统统计
 6. **返回结果** - 结构化JSON供Agent使用
-
-## 工作流程
-
-系统会自动：
-- 处理新对话生成摘要
-- 使用大模型判断对话归属
-- 智能合并到现有笔记或创建新笔记
-- 创建日志文件记录
-- 更新统计信息
 
 ## 输出位置
 
@@ -83,9 +65,31 @@ npm run agent:knowledge
 - **日志**: `content/logs/` - 对话记录
 - **摘要数据**: `data/summaries/` - JSON格式
 
+## 执行结果
+
+```json
+{
+  "success": true,
+  "processed": 5,
+  "created_logs": 3,
+  "created_notes": 2,
+  "updated_notes": 1,
+  "total_conversations": 150,
+  "total_topics": 25,
+  "total_domains": 8,
+  "backup_path": "data/summaries/backups/...",
+  "processing_stats": {
+    "total_processed": 145,
+    "avg_time_ms": 2500,
+    "success_rate": 0.98
+  },
+  "duration_ms": 3500
+}
+```
+
 ## 配置
 
-编辑 `summary-config.json` 调整系统行为：
+编辑 `summary-config.json`：
 
 ```json
 {
@@ -98,38 +102,6 @@ npm run agent:knowledge
   }
 }
 ```
-
-## 执行结果
-
-脚本执行后会返回JSON格式的结果：
-
-```json
-{
-  "success": true,
-  "processed": 5,
-  "created_logs": 3,
-  "created_notes": 2,
-  "updated_notes": 1,
-  "total_conversations": 150,
-  "total_topics": 25,
-  "total_domains": 8,
-  "backup_path": "data/summaries/backups/backup-2024-01-15T10-30-00",
-  "processing_stats": {
-    "total_processed": 145,
-    "avg_time_ms": 2500,
-    "success_rate": 0.98,
-    "recent_errors_count": 2
-  },
-  "duration_ms": 3500
-}
-```
-
-**Agent可以使用这些信息**：
-- 判断是否有新内容生成
-- 了解知识库的增长情况
-- 检查处理成功率和错误情况
-- 向用户报告执行结果
-- 获取备份路径（如需恢复）
 
 ## 注意事项
 
