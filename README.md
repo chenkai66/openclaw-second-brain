@@ -48,6 +48,7 @@
 
 - Node.js 18+ 
 - npm/yarn/pnpm
+- OpenAI兼容的API Key（如阿里云DashScope）
 
 ### 安装
 
@@ -59,11 +60,37 @@ cd openclaw-second-brain
 # 安装依赖
 npm install
 
+# 配置环境变量（重要！）
+export OPENAI_API_KEY="your-api-key-here"
+export OPENAI_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
+export OPENCLAW_SESSIONS_PATH="$HOME/.openclaw/agents/main/sessions"
+
+# 初始化系统
+npm run summary:init
+
 # 启动开发服务器
 npm run dev
 ```
 
 访问 [http://localhost:3000](http://localhost:3000) 🎉
+
+### ⚠️ 常见问题
+
+如果遇到以下问题，请查看 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)：
+
+- ❌ 系统只创建简单日志，没有真正的知识提取
+- ❌ 环境变量在定时任务中不生效
+- ❌ TypeScript导入错误
+- ❌ 端口冲突（3000 vs 3001）
+- ❌ 对话文件读取失败
+
+**快速诊断**：
+```bash
+# 运行诊断脚本
+curl -O https://raw.githubusercontent.com/yourusername/openclaw-second-brain/master/diagnose.sh
+chmod +x diagnose.sh
+./diagnose.sh
+```
 
 ### 生产部署
 
