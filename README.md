@@ -18,8 +18,8 @@
 
 ### 🤖 AI 自动化系统
 
-- **Knowledge Agent** - 每5分钟自动同步对话，智能提取概念和知识点
-- **Research Agent** - 每晚23:00分析兴趣点，生成个性化研究报告
+- **Knowledge Agent** - 每小时自动同步对话，智能提取概念和知识点，生成Notes和Logs
+- **Research Agent** - 每晚23:00从summary系统获取热门主题和关键词，自动生成研究查询词，生成个性化研究报告
 - **Social Research** - 并行搜索Reddit和X，捕捉社区真实讨论
 
 ### 🔍 智能搜索与导航
@@ -131,14 +131,15 @@ openclaw-second-brain/
 ### 🔬 技术研究
 
 ```
-兴趣点 → Research Agent → 多源搜索 → 综合报告 → 行动建议
+对话历史 → Summary系统 → 热门主题/关键词 → Research Agent → 生成查询词 → 多源搜索 → 综合报告
 ```
 
 **示例**：研究AI编码工具
 1. 频繁讨论Cursor、GitHub Copilot
-2. Research Agent检测到兴趣点（评分8.5/10）
-3. 自动搜索最新文章、GitHub项目、HN讨论
-4. 生成2500字深度报告，包含使用建议
+2. Summary系统提取热门主题："AI Coding Tools"，关键词：["cursor", "copilot", "ai-coding"]
+3. Research Agent获取数据，生成查询词："Cursor vs GitHub Copilot comparison"
+4. 自动搜索最新文章、GitHub项目、HN讨论
+5. 生成2500字深度报告，包含使用建议
 
 ### 💡 内容创作
 
@@ -225,12 +226,69 @@ Total Bundle Size: 87KB (gzipped)
 ```
 主Agent (CRON-AGENT-README.md)
     ↓ 创建定时任务
-    ├─→ Knowledge Agent (isolated, 每5分钟)
-    │   └─→ 同步对话 → 更新Notes/Logs
+    ├─→ Knowledge Agent (isolated, 每小时)
+    │   └─→ 同步对话 → 生成摘要 → 更新Notes/Logs → 更新Summary数据
     │
     └─→ Research Agent (isolated, 每天23:00)
-        └─→ 分析兴趣 → 生成Reports
+        └─→ 从Summary获取数据 → 分析热门主题/关键词 → 生成查询词 → 互联网搜索 → 生成Reports
 ```
+
+### Knowledge Agent 工作流
+
+```bash
+npm run agent:knowledge
+```
+
+**自动完成**：
+1. 读取未处理的对话历史
+2. 调用大模型生成摘要和关键词
+3. 智能聚类到主题和领域
+4. 转换为Markdown（Notes和Logs）
+5. 更新Summary数据（供Research Agent使用）
+6. 创建自动备份
+
+**输出**：
+- `content/notes/` - 知识笔记
+- `content/logs/` - 对话日志
+- `data/summaries/` - JSON数据（热门主题、关键词统计）
+
+### Research Agent 工作流
+
+```bash
+npm run agent:research
+```
+
+**自动完成**：
+1. 从Summary系统获取热门主题（`getTopTopics()`）
+2. 获取热门关键词（`getTopKeywords()`）
+3. 返回结构化数据供Agent分析
+
+**返回数据示例**：
+```json
+{
+  "top_topics": [
+    {
+      "name": "React Performance",
+      "keywords": ["react", "performance", "optimization"],
+      "conversation_count": 15,
+      "score": 0.85
+    }
+  ],
+  "top_keywords": [
+    { "keyword": "react", "count": 45 },
+    { "keyword": "typescript", "count": 38 }
+  ]
+}
+```
+
+**Agent使用数据**：
+- 选择研究主题（例如："React Performance"）
+- 生成查询词组合：
+  - "React Performance optimization tutorial"
+  - "React performance best practices 2024"
+  - "React hooks performance tips"
+- 使用搜索工具查找资料（Google、GitHub、HN）
+- 生成研究报告保存到 `content/reports/`
 
 ### 创建定时任务
 
