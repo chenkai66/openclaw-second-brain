@@ -5,11 +5,11 @@
  * 调用lib接口获取用户兴趣数据，供Agent分析和研究
  */
 
-const path = require('path');
-const fs = require('fs');
+import path from 'path';
+import fs from 'fs';
 
 // 项目根目录
-const PROJECT_ROOT = path.resolve(__dirname, '../../..');
+const PROJECT_ROOT = path.resolve(import.meta.dirname, '../../..');
 
 async function runDailyResearch() {
   console.log('🔬 Research Agent 启动...\n');
@@ -99,7 +99,7 @@ async function runDailyResearch() {
 }
 
 // 主入口
-if (require.main === module) {
+if (import.meta.main) {
   runDailyResearch()
     .then(result => {
       if (result.success) {
@@ -127,5 +127,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { runDailyResearch };
-
+export { runDailyResearch };

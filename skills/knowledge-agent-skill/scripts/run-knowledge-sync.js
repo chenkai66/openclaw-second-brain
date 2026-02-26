@@ -10,15 +10,22 @@ const path = require('path');
 // 项目根目录
 const PROJECT_ROOT = path.resolve(__dirname, '../../..');
 
-// 动态导入 lib 模块
+// 动态导入 lib 模块（使用动态import）
 async function runKnowledgeSync() {
   console.log('🧠 Knowledge Agent 启动...\n');
   
   const startTime = Date.now();
   
   try {
+    // 验证环境变量
+    if (!process.env.OPENAI_API_KEY || !process.env.OPENAI_BASE_URL) {
+      throw new Error('Missing required environment variables: OPENAI_API_KEY, OPENAI_BASE_URL');
+    }
+    
     // 导入 summary 系统
-    const summaryLib = await import(path.join(PROJECT_ROOT, 'lib/summary/index.ts'));
+    const summaryLibPath = path.join(PROJECT_ROOT, 'lib/summary/index.js');
+    // 如果 .js 文件不存在，尝试 .ts 文件
+    const summaryLib = await import(summaryLibPath.replace('.js', '.ts'));
     
     // 1. 初始化系统（确保配置和目录正确）
     console.log('🔧 初始化系统...');
@@ -57,7 +64,8 @@ async function runKnowledgeSync() {
     
     // 3. 转换为 Markdown
     console.log('📝 步骤2: 转换为Markdown文件...');
-    const { MarkdownConverter } = await import(path.join(PROJECT_ROOT, 'lib/summary/markdown-converter.ts'));
+    const markdownConverterPath = path.join(PROJECT_ROOT, 'lib/summary/markdown-converter.ts');
+    const { MarkdownConverter } = await import(markdownConverterPath);
     
     const converter = new MarkdownConverter();
     const convertResult = await converter.convertAll();
@@ -162,4 +170,3 @@ if (require.main === module) {
 }
 
 module.exports = { runKnowledgeSync };
-
