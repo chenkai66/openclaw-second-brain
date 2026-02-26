@@ -61,13 +61,12 @@ npm run agent:knowledge
 - `~/openclaw-second-brain`
 
 这个脚本会自动完成：
-1. 直接调用 `lib/summary` 模块（无需API服务器）
-2. 读取对话历史
-3. 调用大模型生成摘要
-4. 智能聚类和分类
-5. 转换为Markdown文件
-6. 更新同步状态
-7. 返回执行结果（供Agent使用）
+1. **初始化系统** - 验证配置，确保目录存在
+2. **处理对话** - 读取未处理的对话，生成摘要，智能分类
+3. **转换Markdown** - 创建/更新Notes和Logs文件
+4. **创建备份** - 自动备份数据（保留最近N个备份）
+5. **统计分析** - 返回完整的系统统计和处理历史
+6. **返回结果** - 结构化JSON供Agent使用
 
 ## 工作流程
 
@@ -114,6 +113,13 @@ npm run agent:knowledge
   "total_conversations": 150,
   "total_topics": 25,
   "total_domains": 8,
+  "backup_path": "data/summaries/backups/backup-2024-01-15T10-30-00",
+  "processing_stats": {
+    "total_processed": 145,
+    "avg_time_ms": 2500,
+    "success_rate": 0.98,
+    "recent_errors_count": 2
+  },
   "duration_ms": 3500
 }
 ```
@@ -121,7 +127,9 @@ npm run agent:knowledge
 **Agent可以使用这些信息**：
 - 判断是否有新内容生成
 - 了解知识库的增长情况
+- 检查处理成功率和错误情况
 - 向用户报告执行结果
+- 获取备份路径（如需恢复）
 
 ## 注意事项
 
