@@ -14,7 +14,7 @@ openclaw cron add \
   --name "Knowledge Sync" \
   --cron "0 * * * *" \
   --session isolated \
-  --message "npm run summary:pipeline" \
+  --message "cd /root/openclaw-second-brain && npm run summary:pipeline" \
   --delivery none
 
 # 查看任务列表
@@ -27,20 +27,24 @@ openclaw cron runs --name "Knowledge Sync" --limit 10
 openclaw cron run --name "Knowledge Sync"
 ```
 
+**注意**：将 `/root/openclaw-second-brain` 替换为实际的项目路径。
+
 ## 执行命令
 
-当被定时任务调用时，执行：
+当被定时任务调用时，在项目目录执行：
 
 ```bash
+cd /root/openclaw-second-brain
 npm run summary:pipeline
 ```
 
-这个命令会自动完成：
-1. 读取对话历史
-2. 调用大模型生成摘要
-3. 智能聚类和分类
-4. 转换为Markdown文件
-5. 更新同步状态
+这个脚本会自动完成：
+1. 检查服务器是否运行（http://localhost:3000）
+2. 读取对话历史
+3. 调用大模型生成摘要
+4. 智能聚类和分类
+5. 转换为Markdown文件
+6. 更新同步状态
 
 ## 工作流程
 
@@ -76,5 +80,6 @@ npm run summary:pipeline
 ## 注意事项
 
 - 不要创建或修改定时任务（由主Agent管理）
+- 确保开发服务器正在运行（npm run dev）
 - 系统会自动处理错误和重试
 - 所有操作都有详细日志记录

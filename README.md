@@ -240,7 +240,7 @@ openclaw cron add \
   --name "Knowledge Sync" \
   --cron "0 * * * *" \
   --session isolated \
-  --message "npm run summary:pipeline" \
+  --message "cd /root/openclaw-second-brain && npm run summary:pipeline" \
   --delivery none
 
 # Research Agent - 每晚23:00研究
@@ -249,9 +249,11 @@ openclaw cron add \
   --cron "0 23 * * *" \
   --tz "Asia/Shanghai" \
   --session isolated \
-  --message "Execute daily research based on user interests" \
+  --message "cd /root/openclaw-second-brain && Execute daily research based on user interests" \
   --delivery none
 ```
+
+**注意**：将 `/root/openclaw-second-brain` 替换为实际的项目路径。
 
 ### 查看Agent执行历史
 
