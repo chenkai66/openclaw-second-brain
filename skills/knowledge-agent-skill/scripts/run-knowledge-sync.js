@@ -10,7 +10,24 @@ const path = require('path');
 // 项目根目录
 const PROJECT_ROOT = path.resolve(__dirname, '../../..');
 
-// 动态导入 lib 模块（使用动态import）
+/**
+ * 验证环境变量
+ */
+function validateEnvironment() {
+  const required = ['OPENAI_API_KEY', 'OPENAI_BASE_URL'];
+  const missing = required.filter(env => !process.env[env]);
+  
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required environment variables: ${missing.join(', ')}\n\n` +
+      `Please set them before running:\n` +
+      `export OPENAI_API_KEY="your-key"\n` +
+      `export OPENAI_BASE_URL="your-url"`
+    );
+  }
+}
+
+// 动态导入 lib 模块
 async function runKnowledgeSync() {
   console.log('🧠 Knowledge Agent 启动...\n');
   
@@ -18,14 +35,10 @@ async function runKnowledgeSync() {
   
   try {
     // 验证环境变量
-    if (!process.env.OPENAI_API_KEY || !process.env.OPENAI_BASE_URL) {
-      throw new Error('Missing required environment variables: OPENAI_API_KEY, OPENAI_BASE_URL');
-    }
+    validateEnvironment();
     
-    // 导入 summary 系统
-    const summaryLibPath = path.join(PROJECT_ROOT, 'lib/summary/index.js');
-    // 如果 .js 文件不存在，尝试 .ts 文件
-    const summaryLib = await import(summaryLibPath.replace('.js', '.ts'));
+    // 导入 summary 系统（Node.js会自动处理.ts文件通过ts-node或Next.js）
+    const summaryLib = await import(path.join(PROJECT_ROOT, 'lib/summary/index.ts'));
     
     // 1. 初始化系统（确保配置和目录正确）
     console.log('🔧 初始化系统...');

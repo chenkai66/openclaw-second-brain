@@ -5,11 +5,10 @@
  * 调用lib接口获取用户兴趣数据，供Agent分析和研究
  */
 
-import path from 'path';
-import fs from 'fs';
+const path = require('path');
 
 // 项目根目录
-const PROJECT_ROOT = path.resolve(import.meta.dirname, '../../..');
+const PROJECT_ROOT = path.resolve(__dirname, '../../..');
 
 async function runDailyResearch() {
   console.log('🔬 Research Agent 启动...\n');
@@ -18,8 +17,11 @@ async function runDailyResearch() {
   
   try {
     // 导入lib模块
-    const { summaryRetriever } = await import(path.join(PROJECT_ROOT, 'lib/summary/summary-retriever.ts'));
-    const { summaryStorage } = await import(path.join(PROJECT_ROOT, 'lib/summary/summary-storage.ts'));
+    const summaryRetrieverModule = await import(path.join(PROJECT_ROOT, 'lib/summary/summary-retriever.ts'));
+    const summaryStorageModule = await import(path.join(PROJECT_ROOT, 'lib/summary/summary-storage.ts'));
+    
+    const { summaryRetriever } = summaryRetrieverModule;
+    const { summaryStorage } = summaryStorageModule;
     
     // 1. 获取热门主题（最近7天）
     console.log('📊 步骤1: 获取热门主题...');
@@ -99,7 +101,7 @@ async function runDailyResearch() {
 }
 
 // 主入口
-if (import.meta.main) {
+if (require.main === module) {
   runDailyResearch()
     .then(result => {
       if (result.success) {
@@ -127,4 +129,4 @@ if (import.meta.main) {
     });
 }
 
-export { runDailyResearch };
+module.exports = { runDailyResearch };

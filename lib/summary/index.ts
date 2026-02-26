@@ -4,47 +4,47 @@
  */
 
 // 类型定义
-export * from './types.js';
+export * from './types';
 
 // 配置管理
-export { configManager, ConfigManager } from './config.js';
+export { configManager, ConfigManager } from './config';
 
 // 大模型客户端
-export { llmClient, LLMClient } from './llm-client.js';
+export { llmClient, LLMClient } from './llm-client';
 
 // 存储管理
-export { summaryStorage, SummaryStorage } from './summary-storage.js';
+export { summaryStorage, SummaryStorage } from './summary-storage';
 
 // 摘要生成
-export { summaryGenerator, SummaryGenerator } from './summary-generator.js';
+export { summaryGenerator, SummaryGenerator } from './summary-generator';
 
 // 对话处理
-export { conversationProcessor, ConversationProcessor } from './conversation-processor.js';
+export { conversationProcessor, ConversationProcessor } from './conversation-processor';
 
 // 检索器
-export { summaryRetriever, SummaryRetriever } from './summary-retriever.js';
+export { summaryRetriever, SummaryRetriever } from './summary-retriever';
 
 // 聚类引擎
-export { clusteringEngine, ClusteringEngine } from './clustering-engine.js';
+export { clusteringEngine, ClusteringEngine } from './clustering-engine';
 
 // Markdown转换器
-export { MarkdownConverter } from './markdown-converter.js';
+export { MarkdownConverter } from './markdown-converter';
 
 // 智能合并器
-export { IntelligentMerger } from './intelligent-merger.js';
+export { IntelligentMerger } from './intelligent-merger';
 
 // 工具函数
-export * from './utils.js';
+export * from './utils';
 
 /**
  * 初始化摘要系统
  */
 export async function initializeSummarySystem(configPath?: string): Promise<void> {
-  const { configManager } = await import('./config.js');
+  const { configManager } = await import('./config');
   
   if (configPath) {
     // 加载自定义配置
-    const config = new (await import('./config.js')).ConfigManager(configPath);
+    const config = new (await import('./config')).ConfigManager(configPath);
     Object.assign(configManager, config);
   }
 
@@ -69,7 +69,7 @@ export async function quickProcess(): Promise<{
   errors: number;
   duration_ms: number;
 }> {
-  const { conversationProcessor } = await import('./conversation-processor.js');
+  const { conversationProcessor } = await import('./conversation-processor');
   const result = await conversationProcessor.processAll();
 
   return {
@@ -90,7 +90,7 @@ export async function quickSearch(
     searchType?: 'keyword' | 'semantic' | 'hybrid';
   }
 ) {
-  const { summaryRetriever } = await import('./summary-retriever.js');
+  const { summaryRetriever } = await import('./summary-retriever');
   
   return await summaryRetriever.search({
     query,
@@ -103,8 +103,8 @@ export async function quickSearch(
  * 获取系统统计
  */
 export async function getSystemStats() {
-  const { summaryStorage } = await import('./summary-storage.js');
-  const { conversationProcessor } = await import('./conversation-processor.js');
+  const { summaryStorage } = await import('./summary-storage');
+  const { conversationProcessor } = await import('./conversation-processor');
 
   const metadata = summaryStorage.loadMetadata();
   const processingStats = conversationProcessor.getProcessingStats();
@@ -119,7 +119,7 @@ export async function getSystemStats() {
  * 创建备份
  */
 export async function createBackup(): Promise<string> {
-  const { summaryStorage } = await import('./summary-storage.js');
+  const { summaryStorage } = await import('./summary-storage');
   return summaryStorage.createBackup();
 }
 
@@ -127,6 +127,6 @@ export async function createBackup(): Promise<string> {
  * 测试LLM连接
  */
 export async function testLLMConnection(): Promise<boolean> {
-  const { llmClient } = await import('./llm-client.js');
+  const { llmClient } = await import('./llm-client');
   return await llmClient.testConnection();
 }
