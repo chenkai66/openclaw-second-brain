@@ -28,6 +28,11 @@ import {
 export class ConversationProcessor {
   /**
    * 从OpenClaw会话目录读取原始对话
+   * 
+   * OpenClaw存储格式：
+   * - 每个会话一个 .jsonl 文件
+   * - 每行一个JSON对象，包含不同类型的记录
+   * - 类型包括：session, message, toolCall, toolResult, model_change等
    */
   async loadRawConversations(conversationSource?: string): Promise<RawConversation[]> {
     const source =
@@ -43,33 +48,28 @@ export class ConversationProcessor {
     const conversations: RawConversation[] = [];
 
     try {
-      // 读取所有.jsonl文件
-      const files = fs.readdirSync(source).filter((f) => f.endsWith('.jsonl'));
+      // 读取所有.jsonl文件（排除.lock文件）
+      const files = fs
+        .readdirSync(source)
+        .filter((f) => f.endsWith('.jsonl') && !f.endsWith('.jsonl.lock'));
 
       for (const file of files) {
         const filePath = path.join(source, file);
-        const content = fs.readFileSync(filePath, 'utf-8');
-        const lines = content.split('\n').filter((line) => line.trim());
+        
+        // 检查是否有锁文件，跳过正在写入的会话
+        const lockPath = `${filePath}.lock`;
+        if (fs.existsSync(lockPath)) {
+          console.log(`Skipping locked session: ${file}`);
+          continue;
+        }
 
-        for (const line of lines) {
-          try {
-            const data = JSON.parse(line);
-            // 提取对话内容
-            if (data.messages && Array.isArray(data.messages)) {
-              const conversationText = data.messages
-                .map((msg: any) => `${msg.role}: ${msg.content}`)
-                .join('\n\n');
-
-              conversations.push({
-                id: data.id || generateId('conv'),
-                timestamp: data.timestamp || new Date().toISOString(),
-                content: conversationText,
-                metadata: data.metadata || {},
-              });
-            }
-          } catch (error) {
-            console.warn(`Failed to parse line in ${file}:`, error);
+        try {
+          const sessionData = this.parseSessionFile(filePath);
+          if (sessionData) {
+            conversations.push(sessionData);
           }
+        } catch (error) {
+          console.warn(`Failed to parse session file ${file}:`, error);
         }
       }
     } catch (error) {
@@ -77,6 +77,95 @@ export class ConversationProcessor {
     }
 
     return conversations;
+  }
+
+  /**
+   * 解析单个会话文件（JSONL格式）
+   */
+  private parseSessionFile(filePath: string): RawConversation | null {
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const lines = content.split('\n').filter((line) => line.trim());
+
+    let sessionId = '';
+    let sessionTimestamp = '';
+    let sessionCwd = '';
+    const messages: Array<{ role: string; content: string; timestamp: string }> = [];
+
+    for (const line of lines) {
+      try {
+        const record = JSON.parse(line);
+
+        // 处理会话元数据
+        if (record.type === 'session') {
+          sessionId = record.id;
+          sessionTimestamp = record.timestamp;
+          sessionCwd = record.cwd || '';
+        }
+
+        // 处理消息记录
+        if (record.type === 'message' && record.message) {
+          const msg = record.message;
+          
+          // 只保留用户和助手的消息，忽略工具结果
+          if (msg.role === 'user' || msg.role === 'assistant') {
+            // 提取文本内容
+            let textContent = '';
+            
+            if (Array.isArray(msg.content)) {
+              // content是数组，提取所有text类型的内容
+              textContent = msg.content
+                .filter((item: any) => item.type === 'text')
+                .map((item: any) => item.text)
+                .join('\n');
+            } else if (typeof msg.content === 'string') {
+              textContent = msg.content;
+            }
+
+            if (textContent.trim()) {
+              messages.push({
+                role: msg.role,
+                content: textContent.trim(),
+                timestamp: record.timestamp || msg.timestamp || sessionTimestamp,
+              });
+            }
+          }
+        }
+      } catch (error) {
+        // 忽略无法解析的行
+        continue;
+      }
+    }
+
+    // 如果没有有效消息，返回null
+    if (messages.length === 0) {
+      return null;
+    }
+
+    // 组装对话文本
+    const conversationText = messages
+      .map((msg) => `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`)
+      .join('\n\n');
+
+    // 计算对话长度（字符数）
+    const conversationLength = conversationText.length;
+
+    // 过滤太短的对话
+    const minLength = configManager.getProcessingConfig().min_conversation_length;
+    if (conversationLength < minLength) {
+      console.log(`Skipping short conversation (${conversationLength} chars): ${sessionId}`);
+      return null;
+    }
+
+    return {
+      id: sessionId || generateId('conv'),
+      timestamp: sessionTimestamp || new Date().toISOString(),
+      content: conversationText,
+      metadata: {
+        cwd: sessionCwd,
+        message_count: messages.length,
+        file_path: filePath,
+      },
+    };
   }
 
   /**

@@ -380,6 +380,54 @@ openclaw cron remove <job-id>
 
 ## 📝 对话总结系统
 
+### OpenClaw 对话存储格式
+
+#### 存储路径结构
+```
+~/.openclaw/agents/main/sessions/
+├── {session-id}.jsonl          # 会话文件
+├── {session-id}.jsonl.lock     # 锁文件（写入中）
+└── ...
+```
+
+#### 文件格式说明
+- **格式**: JSONL (JSON Lines) - 每行一个独立的JSON对象
+- **编码**: UTF-8
+- **特点**: 流式可读，增量处理友好
+
+#### 记录类型
+| 类型 | 说明 |
+|------|------|
+| `session` | 会话元数据（ID、时间戳、工作目录） |
+| `message` | 用户/助手消息 |
+| `toolCall` | 工具调用 |
+| `toolResult` | 工具执行结果 |
+| `model_change` | 模型切换 |
+
+#### 示例结构
+```json
+// 会话元数据
+{"type":"session","version":3,"id":"065ce98c-195e-4aef-a753-ab22ffb13f67","timestamp":"2026-02-26T03:35:19.545Z","cwd":"/home/admin/openclaw/workspace"}
+
+// 用户消息
+{"type":"message","id":"3b4be693","parentId":"e684b5ab","timestamp":"2026-02-26T03:36:13.617Z","message":{"role":"user","content":[{"type":"text","text":"clone这个仓库"}]}}
+
+// 助手消息（包含工具调用）
+{"type":"message","id":"4565cc7c","parentId":"3b4be693","timestamp":"2026-02-26T03:36:16.564Z","message":{"role":"assistant","content":[{"type":"text","text":"我来帮你克隆："},{"type":"toolCall","id":"call_xxx","name":"exec","arguments":{"command":"git clone ..."}}]}}
+
+// 工具执行结果
+{"type":"message","id":"94b67541","parentId":"4565cc7c","timestamp":"2026-02-26T03:36:18.753Z","message":{"role":"toolResult","toolCallId":"call_xxx","toolName":"exec","content":[{"type":"text","text":"Cloning into..."}]}}
+```
+
+#### 处理逻辑
+系统会：
+1. 读取所有 `.jsonl` 文件（跳过 `.lock` 文件）
+2. 逐行解析JSON记录
+3. 提取 `type: "message"` 且 `role: "user"` 或 `"assistant"` 的消息
+4. 忽略工具调用的中间步骤
+5. 组装成完整对话文本
+6. 过滤太短的对话（< 50字符）
+
 ### 快速开始
 
 ```bash
