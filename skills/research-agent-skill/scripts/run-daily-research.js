@@ -2,7 +2,7 @@
 
 /**
  * Research Agent 执行脚本
- * 分析用户兴趣并生成研究报告
+ * 调用lib接口获取用户兴趣数据，供Agent分析和研究
  */
 
 const path = require('path');
@@ -17,133 +17,73 @@ async function runDailyResearch() {
   const startTime = Date.now();
   
   try {
-    // 1. 分析用户兴趣
-    console.log('📊 步骤1: 分析用户兴趣...');
+    // 导入lib模块
     const { summaryRetriever } = await import(path.join(PROJECT_ROOT, 'lib/summary/summary-retriever.ts'));
     const { summaryStorage } = await import(path.join(PROJECT_ROOT, 'lib/summary/summary-storage.ts'));
     
-    // 获取最近7天的热门主题
+    // 1. 获取热门主题（最近7天）
+    console.log('📊 步骤1: 获取热门主题...');
+    const topTopics = summaryRetriever.getTopTopics(10);
+    
+    // 过滤最近7天的主题
+    const recentTopics = topTopics.filter(item => {
+      const daysSince = (Date.now() - new Date(item.topic.updated_at).getTime()) / (1000 * 60 * 60 * 24);
+      return daysSince <= 7;
+    });
+    
+    console.log(`✅ 找到 ${recentTopics.length} 个热门主题\n`);
+    
+    // 2. 获取热门关键词
+    console.log('📊 步骤2: 获取热门关键词...');
+    const topKeywords = summaryRetriever.getTopKeywords(20);
+    console.log(`✅ 找到 ${topKeywords.length} 个热门关键词\n`);
+    
+    // 3. 获取统计信息
+    console.log('📊 步骤3: 获取统计信息...');
     const metadata = summaryStorage.loadMetadata();
-    const recentTopics = Object.entries(metadata.topics)
-      .map(([id, topic]) => ({
-        id,
-        name: topic.name,
-        count: topic.conversation_count,
-        lastUpdated: new Date(topic.last_updated)
-      }))
-      .filter(topic => {
-        const daysSince = (Date.now() - topic.lastUpdated.getTime()) / (1000 * 60 * 60 * 24);
-        return daysSince <= 7;
-      })
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 5);
+    const allDomains = summaryStorage.getAllDomains();
     
-    console.log('✅ 发现热门主题:');
-    recentTopics.forEach((topic, i) => {
-      console.log(`   ${i + 1}. ${topic.name} (${topic.count}次讨论)`);
-    });
-    console.log();
-    
-    if (recentTopics.length === 0) {
-      console.log('ℹ️  最近7天没有足够的讨论数据');
-      return {
-        success: true,
-        topics_analyzed: 0,
-        reports_generated: 0
-      };
-    }
-    
-    // 2. 选择研究主题（选择讨论最多的）
-    const selectedTopic = recentTopics[0];
-    console.log(`🎯 选择研究主题: ${selectedTopic.name}\n`);
-    
-    // 3. 搜索相关对话
-    console.log('🔍 步骤2: 搜索相关对话...');
-    const searchResults = await summaryRetriever.search({
-      query: selectedTopic.name,
-      search_type: 'hybrid',
-      limit: 20
-    });
-    
-    console.log(`✅ 找到 ${searchResults.results.length} 条相关对话\n`);
-    
-    // 4. 生成研究报告
-    console.log('📝 步骤3: 生成研究报告...');
-    
-    const reportDate = new Date().toISOString().split('T')[0];
-    const reportTitle = `${selectedTopic.name} - 研究报告`;
-    const reportSlug = `${reportDate}-${selectedTopic.name.toLowerCase().replace(/\s+/g, '-')}`;
-    
-    // 提取关键信息
-    const keyPoints = searchResults.results
-      .slice(0, 10)
-      .map(r => r.summary || r.title)
-      .filter(Boolean);
-    
-    // 生成报告内容
-    const reportContent = `---
-date: ${reportDate}
-type: daily-research
-title: ${reportTitle}
-summary: 基于最近7天的对话分析，深入研究 ${selectedTopic.name} 相关内容
-tags: [${selectedTopic.name}, research, auto-generated]
-ai_generated: true
-conversation_count: ${selectedTopic.count}
----
-
-# ${reportTitle}
-
-## 研究背景
-
-基于最近7天的对话分析，发现 **${selectedTopic.name}** 是你最关注的话题之一，共有 ${selectedTopic.count} 次相关讨论。
-
-## 核心发现
-
-${keyPoints.map((point, i) => `### ${i + 1}. ${point}\n`).join('\n')}
-
-## 相关对话
-
-${searchResults.results.slice(0, 5).map(r => `- **${r.title}** (${new Date(r.timestamp).toLocaleDateString()})`).join('\n')}
-
-## 推荐行动
-
-- [ ] 深入学习 ${selectedTopic.name} 的核心概念
-- [ ] 实践相关技术和工具
-- [ ] 关注社区最新动态
-
-## 数据来源
-
-- 分析时间范围: 最近7天
-- 相关对话数: ${searchResults.results.length}
-- 生成时间: ${new Date().toLocaleString()}
-
----
-
-*本报告由 Research Agent 自动生成*
-`;
-    
-    // 保存报告
-    const reportsDir = path.join(PROJECT_ROOT, 'content/reports');
-    if (!fs.existsSync(reportsDir)) {
-      fs.mkdirSync(reportsDir, { recursive: true });
-    }
-    
-    const reportPath = path.join(reportsDir, `${reportSlug}.md`);
-    fs.writeFileSync(reportPath, reportContent, 'utf-8');
-    
-    console.log(`✅ 报告已保存: ${reportPath}\n`);
+    console.log('✅ 统计信息:');
+    console.log(`   - 总对话数: ${metadata.statistics.total_conversations}`);
+    console.log(`   - 总主题数: ${metadata.statistics.total_topics}`);
+    console.log(`   - 总领域数: ${metadata.statistics.total_domains}\n`);
     
     const totalTime = Date.now() - startTime;
-    console.log(`🎉 Research Agent 执行完成！总耗时: ${totalTime}ms\n`);
+    console.log(`🎉 数据获取完成！总耗时: ${totalTime}ms\n`);
     
-    // 返回执行结果
+    // 返回结构化数据供Agent使用
     return {
       success: true,
-      topics_analyzed: recentTopics.length,
-      selected_topic: selectedTopic.name,
-      reports_generated: 1,
-      report_path: reportPath,
-      conversation_count: searchResults.results.length,
+      data: {
+        // 热门主题（按讨论热度排序）
+        top_topics: recentTopics.map(item => ({
+          id: item.topic.id,
+          name: item.topic.name,
+          domain: item.domain.name,
+          conversation_count: item.topic.conversation_count,
+          score: item.score,
+          updated_at: item.topic.updated_at,
+          keywords: item.topic.conversations.flatMap(c => c.keywords).slice(0, 10)
+        })),
+        
+        // 热门关键词（按出现频率排序）
+        top_keywords: topKeywords,
+        
+        // 所有领域
+        domains: allDomains.map(d => ({
+          id: d.id,
+          name: d.name,
+          topic_count: d.topics.length
+        })),
+        
+        // 统计信息
+        statistics: {
+          total_conversations: metadata.statistics.total_conversations,
+          total_topics: metadata.statistics.total_topics,
+          total_domains: metadata.statistics.total_domains,
+          last_updated: metadata.statistics.last_processed_timestamp
+        }
+      },
       duration_ms: totalTime
     };
     
@@ -163,11 +103,19 @@ if (require.main === module) {
   runDailyResearch()
     .then(result => {
       if (result.success) {
-        console.log('📊 执行摘要:');
-        console.log(`   - 分析主题数: ${result.topics_analyzed}`);
-        console.log(`   - 选择主题: ${result.selected_topic}`);
-        console.log(`   - 生成报告: ${result.reports_generated}`);
-        console.log(`   - 报告位置: ${result.report_path}`);
+        console.log('📊 返回数据摘要:');
+        console.log(`   - 热门主题: ${result.data.top_topics.length} 个`);
+        console.log(`   - 热门关键词: ${result.data.top_keywords.length} 个`);
+        console.log(`   - 领域数: ${result.data.domains.length} 个`);
+        console.log(`   - 总对话数: ${result.data.statistics.total_conversations}`);
+        console.log();
+        console.log('💡 Agent可以使用这些数据:');
+        console.log('   1. 分析用户兴趣点（top_topics, top_keywords）');
+        console.log('   2. 选择研究主题');
+        console.log('   3. 使用搜索工具查找相关资料');
+        console.log('   4. 生成研究报告');
+        console.log();
+        console.log('📄 完整数据已返回JSON格式');
         process.exit(0);
       } else {
         process.exit(1);

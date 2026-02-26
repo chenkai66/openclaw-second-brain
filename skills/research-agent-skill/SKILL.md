@@ -41,26 +41,38 @@ npm run agent:research
 
 ## 工作流程
 
-1. **分析用户兴趣**
-   - 直接调用 `lib/summary` 模块
-   - 读取最近7天的对话记录
-   - 统计高频主题和讨论次数
-   - 选择讨论最多的主题进行研究
+### 脚本做什么（自动完成）
 
-2. **搜索相关对话**
-   - 使用 `summaryRetriever.search()` 搜索相关内容
-   - 提取关键信息和讨论要点
-   - 分析用户的技术背景和兴趣点
+1. **获取热门主题**
+   - 调用 `summaryRetriever.getTopTopics(10)`
+   - 过滤最近7天的主题
+   - 按讨论热度排序
+
+2. **获取热门关键词**
+   - 调用 `summaryRetriever.getTopKeywords(20)`
+   - 统计关键词出现频率
+
+3. **获取统计信息**
+   - 总对话数、主题数、领域数
+   - 返回结构化JSON数据
+
+### Agent应该做什么（手动完成）
+
+1. **分析数据**
+   - 查看 `top_topics` 选择研究方向
+   - 查看 `top_keywords` 了解兴趣点
+   - 结合用户最近的对话上下文
+
+2. **互联网搜索**
+   - 使用搜索工具查找相关资料
+   - 来源：Google、GitHub、Hacker News、Dev.to
+   - 筛选高质量内容（最近3个月）
 
 3. **生成研究报告**
-   - 基于对话分析生成结构化报告
-   - 包含核心发现、相关对话、推荐行动
+   - 整合搜索结果
+   - 字数：2000-4000字
+   - 代码示例：3-5个
    - 保存到：`content/reports/YYYY-MM-DD-主题.md`
-
-4. **返回执行结果**
-   - 报告生成状态
-   - 分析的主题数量
-   - 报告文件路径
 
 ## 报告结构
 
@@ -104,24 +116,50 @@ sources: [url1, url2]
 
 ## 执行结果
 
-脚本执行后会返回JSON格式的结果：
+脚本执行后会返回JSON格式的数据：
 
 ```json
 {
   "success": true,
-  "topics_analyzed": 5,
-  "selected_topic": "React Performance",
-  "reports_generated": 1,
-  "report_path": "content/reports/2024-01-15-react-performance.md",
-  "conversation_count": 15,
+  "data": {
+    "top_topics": [
+      {
+        "id": "topic-123",
+        "name": "React Performance",
+        "domain": "Frontend Development",
+        "conversation_count": 15,
+        "score": 0.85,
+        "updated_at": "2024-01-15T10:30:00Z",
+        "keywords": ["react", "performance", "optimization", "hooks"]
+      }
+    ],
+    "top_keywords": [
+      { "keyword": "react", "count": 45 },
+      { "keyword": "typescript", "count": 38 }
+    ],
+    "domains": [
+      { "id": "domain-1", "name": "Frontend Development", "topic_count": 12 }
+    ],
+    "statistics": {
+      "total_conversations": 150,
+      "total_topics": 25,
+      "total_domains": 8
+    }
+  },
   "duration_ms": 2500
 }
 ```
 
-**Agent可以使用这些信息**：
-- 了解分析了哪些主题
-- 获取生成的报告路径
-- 向用户报告研究成果
+**Agent应该使用这些数据**：
+1. **分析用户兴趣** - 查看 `top_topics` 和 `top_keywords`
+2. **选择研究主题** - 根据热度和相关性选择
+3. **使用搜索工具** - 调用互联网搜索（Google、GitHub、HN等）
+4. **生成研究报告** - 整合搜索结果，保存到 `content/reports/`
+
+**Agent不应该做的**：
+- ❌ 不要自己生成报告（脚本不生成报告）
+- ❌ 不要使用lib的search功能做互联网搜索（那是内部搜索）
+- ✅ 应该使用外部搜索工具获取最新资料
 
 ## 中间产物
 
@@ -150,8 +188,10 @@ sources: [url1, url2]
 
 ## 注意事项
 
-- 不要创建或修改定时任务（由主Agent管理）
-- **无需启动Web服务器**（直接调用lib模块）
-- 优先选择讨论最多的主题
-- 排除已有报告的主题（7天内）
-- 每天生成1个研究报告
+- ✅ 脚本只提供数据，不生成报告
+- ✅ Agent需要自己做互联网搜索
+- ✅ Agent需要自己生成和保存报告
+- ✅ 无需启动Web服务器（直接调用lib模块）
+- ✅ 优先选择讨论最多的主题
+- ✅ 排除已有报告的主题（7天内）
+- ✅ 每天生成1个研究报告
