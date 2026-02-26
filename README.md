@@ -343,7 +343,7 @@ openclaw cron run --name "Knowledge Sync"
 
 ---
 
-## 📝 智能对话总结系统
+## 📝 对话总结系统
 
 ### 快速开始
 
@@ -355,121 +355,6 @@ npm run summary:init
 npm run dev
 
 # 3. 执行完整数据管道（一键完成所有步骤）
-npm run summary:pipeline
-
-# 4. 测试API功能
-npm run summary:test-convert
-```
-
-### 核心功能
-
-**智能合并策略** - 使用大模型判断对话归属：
-- **Merge（合并）** - 融入现有笔记，智能整合内容
-- **Create New（新建）** - 创建独立的新笔记
-- **Create Log Only（仅日志）** - 只记录简短对话
-
-**鲁棒性增强**：
-- ✅ 数据验证（格式、必需字段、类型检查）
-- ✅ 错误处理（自动重试3次、降级方案、详细日志）
-- ✅ 防重复处理（跟踪已处理对话ID）
-- ✅ 文件名安全（清理非法字符、防冲突）
-- ✅ 多格式支持（支持多种JSON响应格式）
-- ✅ 内容限制（防止超出token限制）
-
-### 数据流
-
-```
-对话历史 (.jsonl) → API处理 → 摘要数据 (JSON) → Markdown转换 → 前端展示
-```
-
-### API接口
-
-```bash
-# 处理对话生成摘要
-POST /api/summary/process
-
-# 智能转换为Markdown
-POST /api/summary/convert
-
-# 搜索摘要
-POST /api/summary/search
-
-# 获取统计
-GET /api/summary/stats
-
-# 查看摘要树
-GET /api/summary/tree
-```
-
-### 配置
-
-编辑 `summary-config.json`：
-
-```json
-{
-  "llm": {
-    "model": "qwen-plus",
-    "max_retries": 3
-  },
-  "processing": {
-    "batch_size": 10,
-    "delay_ms": 1000
-  },
-  "intelligent_merger": {
-    "max_content_length": 3000,
-    "max_keywords": 10
-  }
-}
-```
-
----
-
-## 📊 知识图谱
-
-### 特性
-
-- **力导向布局** - 自动计算节点位置，美观且有序
-- **交互式探索** - 拖拽、缩放、悬停查看详情
-- **智能着色** - 按类型区分（笔记/日志/标签）
-- **关系强度** - 连线粗细表示关联程度
-
-### 使用技巧
-
-```
-🖱️ 拖拽节点 - 调整布局
-🔍 滚轮缩放 - 查看细节
-👆 点击节点 - 跳转到内容
-🎨 悬停显示 - 查看标题和标签
-```
-
----
-
-## 🔐 数据安全
-
-- **本地存储** - 所有数据存储在本地文件系统
-- **Git版本控制** - 内容变更可追溯
-- **无外部依赖** - 不依赖第三方数据库
-- **隐私保护** - `.agent-workspace/` 不提交到Git
-
----
-
-## 📝 对话总结系统
-
-### 完整数据管道
-
-```
-对话历史 (.jsonl) → API处理 → 摘要数据 (JSON) → Markdown转换 → 前端展示 (Notes/Logs)
-```
-
-**快速开始**:
-```bash
-# 1. 初始化系统
-npm run summary:init
-
-# 2. 启动服务器
-npm run dev
-
-# 3. 执行完整数据管道（自动完成所有步骤）
 npm run summary:pipeline
 ```
 
@@ -487,12 +372,19 @@ OpenClaw    LLM生成摘要    三层树形结构   JSON文件
 
 ### 核心功能
 
-- **自动摘要生成** - 调用大模型为每个对话生成摘要、提取关键词、分析情感
-- **智能聚类** - 自动将相似对话聚合为主题，将相似主题聚合为领域
-- **多阶段摘要** - 三层树形结构（领域 → 主题 → 对话），每层都有独立摘要
-- **试错机制** - 自动重试（3次）、指数退避、降级处理
-- **时间戳管理** - 增量处理、断点续传、处理历史记录
-- **丰富API** - 10+个API接口，支持搜索、统计、推荐等
+**智能合并策略** - 使用大模型判断对话归属：
+- **Merge（合并）** - 融入现有笔记，智能整合内容
+- **Create New（新建）** - 创建独立的新笔记
+- **Create Log Only（仅日志）** - 只记录简短对话
+
+**鲁棒性增强**：
+- ✅ 自动摘要生成 - 调用大模型生成摘要、提取关键词、分析情感
+- ✅ 智能聚类 - 自动将相似对话聚合为主题，将相似主题聚合为领域
+- ✅ 多阶段摘要 - 三层树形结构（领域 → 主题 → 对话），每层都有独立摘要
+- ✅ 错误处理 - 自动重试3次、指数退避、降级处理、详细日志
+- ✅ 防重复处理 - 跟踪已处理对话ID、断点续传
+- ✅ 数据验证 - 格式、必需字段、类型检查
+- ✅ 文件名安全 - 清理非法字符、防冲突
 
 ### 快速使用
 
@@ -515,6 +407,9 @@ const results = await quickSearch('React hooks', { searchType: 'hybrid' });
 ```bash
 # 处理新对话
 POST /api/summary/process
+
+# 智能转换为Markdown
+POST /api/summary/convert
 
 # 搜索摘要（支持关键词/语义/混合搜索）
 POST /api/summary/search
@@ -551,11 +446,16 @@ POST /api/summary/rebuild-index
   },
   "processing": {
     "batch_size": 10,
-    "max_concurrent": 3
+    "max_concurrent": 3,
+    "delay_ms": 1000
   },
   "clustering": {
     "similarity_threshold": 0.7,
     "min_cluster_size": 3
+  },
+  "intelligent_merger": {
+    "max_content_length": 3000,
+    "max_keywords": 10
   }
 }
 ```
