@@ -252,7 +252,7 @@ openclaw cron add \
   --name "Knowledge Sync" \
   --cron "0 * * * *" \
   --session isolated \
-  --message "cd <PROJECT_PATH> && npm run summary:pipeline" \
+  --message "cd <PROJECT_PATH> && npm run agent:knowledge" \
   --delivery none
 
 # Research Agent - 每晚23:00研究
@@ -261,7 +261,7 @@ openclaw cron add \
   --cron "0 23 * * *" \
   --tz "Asia/Shanghai" \
   --session isolated \
-  --message "cd <PROJECT_PATH> && Execute daily research based on user interests" \
+  --message "cd <PROJECT_PATH> && npm run agent:research" \
   --delivery none
 ```
 

@@ -28,7 +28,7 @@ openclaw cron add \
   --name "Knowledge Sync" \
   --cron "0 * * * *" \
   --session isolated \
-  --message "cd <PROJECT_PATH> && npm run summary:pipeline" \
+  --message "cd <PROJECT_PATH> && npm run agent:knowledge" \
   --delivery none
 
 # 查看任务列表
@@ -52,7 +52,7 @@ openclaw cron run --name "Knowledge Sync"
 
 ```bash
 cd <PROJECT_PATH>
-npm run summary:pipeline
+npm run agent:knowledge
 ```
 
 **注意**：`<PROJECT_PATH>` 是项目的实际安装路径，可能是：
@@ -61,12 +61,13 @@ npm run summary:pipeline
 - `~/openclaw-second-brain`
 
 这个脚本会自动完成：
-1. 检查服务器是否运行（http://localhost:3000）
+1. 直接调用 `lib/summary` 模块（无需API服务器）
 2. 读取对话历史
 3. 调用大模型生成摘要
 4. 智能聚类和分类
 5. 转换为Markdown文件
 6. 更新同步状态
+7. 返回执行结果（供Agent使用）
 
 ## 工作流程
 
@@ -99,9 +100,32 @@ npm run summary:pipeline
 }
 ```
 
+## 执行结果
+
+脚本执行后会返回JSON格式的结果：
+
+```json
+{
+  "success": true,
+  "processed": 5,
+  "created_logs": 3,
+  "created_notes": 2,
+  "updated_notes": 1,
+  "total_conversations": 150,
+  "total_topics": 25,
+  "total_domains": 8,
+  "duration_ms": 3500
+}
+```
+
+**Agent可以使用这些信息**：
+- 判断是否有新内容生成
+- 了解知识库的增长情况
+- 向用户报告执行结果
+
 ## 注意事项
 
 - 不要创建或修改定时任务（由主Agent管理）
-- 确保开发服务器正在运行（npm run dev）
+- **无需启动Web服务器**（直接调用lib模块）
 - 系统会自动处理错误和重试
 - 所有操作都有详细日志记录

@@ -15,7 +15,7 @@ openclaw cron add \
   --cron "0 23 * * *" \
   --tz "Asia/Shanghai" \
   --session isolated \
-  --message "Execute daily research based on user interests" \
+  --message "cd <PROJECT_PATH> && npm run agent:research" \
   --delivery none
 
 # 查看任务列表
@@ -32,35 +32,35 @@ openclaw cron run --name "Daily Research"
 
 每天 23:00 自动执行
 
+## 执行命令
+
+```bash
+cd <PROJECT_PATH>
+npm run agent:research
+```
+
 ## 工作流程
 
 1. **分析用户兴趣**
+   - 直接调用 `lib/summary` 模块
    - 读取最近7天的对话记录
-   - 统计高频技术关键词
-   - 识别正在学习的技术栈
-   - 计算兴趣点评分（评分 > 0.6）
+   - 统计高频主题和讨论次数
+   - 选择讨论最多的主题进行研究
 
-2. **使用对话总结系统**
-   ```bash
-   # 获取热门主题
-   curl http://localhost:3000/api/summary/stats?period=week
-   
-   # 搜索相关对话
-   curl -X POST http://localhost:3000/api/summary/search \
-     -H "Content-Type: application/json" \
-     -d '{"query": "React performance", "search_type": "hybrid"}'
-   ```
+2. **搜索相关对话**
+   - 使用 `summaryRetriever.search()` 搜索相关内容
+   - 提取关键信息和讨论要点
+   - 分析用户的技术背景和兴趣点
 
-3. **互联网信息检索**
-   - 多源搜索：Google、GitHub、Hacker News、Dev.to
-   - 筛选高质量内容（最近3个月、有代码示例）
-   - 选择 top 10-15 篇文章
-
-4. **生成研究报告**
-   - 字数：2000-4000字
-   - 代码示例：3-5个
-   - 外部链接：5-10个
+3. **生成研究报告**
+   - 基于对话分析生成结构化报告
+   - 包含核心发现、相关对话、推荐行动
    - 保存到：`content/reports/YYYY-MM-DD-主题.md`
+
+4. **返回执行结果**
+   - 报告生成状态
+   - 分析的主题数量
+   - 报告文件路径
 
 ## 报告结构
 
@@ -102,6 +102,27 @@ sources: [url1, url2]
 - [标题](url) - 说明
 ```
 
+## 执行结果
+
+脚本执行后会返回JSON格式的结果：
+
+```json
+{
+  "success": true,
+  "topics_analyzed": 5,
+  "selected_topic": "React Performance",
+  "reports_generated": 1,
+  "report_path": "content/reports/2024-01-15-react-performance.md",
+  "conversation_count": 15,
+  "duration_ms": 2500
+}
+```
+
+**Agent可以使用这些信息**：
+- 了解分析了哪些主题
+- 获取生成的报告路径
+- 向用户报告研究成果
+
 ## 中间产物
 
 保存到 `.agent-workspace/research-agent/`：
@@ -130,6 +151,7 @@ sources: [url1, url2]
 ## 注意事项
 
 - 不要创建或修改定时任务（由主Agent管理）
-- 优先选择技术前沿话题
+- **无需启动Web服务器**（直接调用lib模块）
+- 优先选择讨论最多的主题
 - 排除已有报告的主题（7天内）
-- 每天生成1-2个研究主题
+- 每天生成1个研究报告
