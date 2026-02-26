@@ -221,16 +221,65 @@ Total Bundle Size: 87KB (gzipped)
 
 ## 🤖 AI Agent 系统
 
+### 自动化部署（主Agent使用）
+
+**你的任务**：为Second Brain系统创建定时任务，实现自动化知识管理和研究。
+
+#### 步骤1：查找项目路径
+
+```bash
+# 自动查找项目路径
+PROJECT_PATH=$(find ~ -type d -name "openclaw-second-brain" 2>/dev/null | head -1)
+
+# 如果找不到，检查常见位置
+[ -z "$PROJECT_PATH" ] && PROJECT_PATH=$(ls -d ~/openclaw/workspace/openclaw-second-brain 2>/dev/null || \
+  ls -d /root/openclaw-second-brain 2>/dev/null || \
+  ls -d ~/openclaw-second-brain 2>/dev/null)
+
+echo "项目路径: $PROJECT_PATH"
+```
+
+#### 步骤2：创建两个定时任务
+
+```bash
+# 任务1: Knowledge Agent - 每小时同步对话到知识库
+openclaw cron add \
+  --name "Knowledge Sync" \
+  --cron "0 * * * *" \
+  --session isolated \
+  --message "cd $PROJECT_PATH && npm run agent:knowledge" \
+  --delivery none
+
+# 任务2: Research Agent - 每晚23:00生成研究报告
+openclaw cron add \
+  --name "Daily Research" \
+  --cron "0 23 * * *" \
+  --tz "Asia/Shanghai" \
+  --session isolated \
+  --message "cd $PROJECT_PATH && npm run agent:research" \
+  --delivery none
+```
+
+#### 步骤3：验证任务创建
+
+```bash
+# 查看任务列表
+openclaw cron list
+
+# 手动测试
+openclaw cron run --name "Knowledge Sync"
+```
+
 ### 架构设计
 
 ```
-主Agent (CRON-AGENT-README.md)
-    ↓ 创建定时任务
-    ├─→ Knowledge Agent (isolated, 每小时)
-    │   └─→ 同步对话 → 生成摘要 → 更新Notes/Logs → 更新Summary数据
+定时任务调度器
+    ↓
+    ├─→ Knowledge Agent (每小时)
+    │   └─→ 读取对话 → 生成摘要 → 更新Notes/Logs → 更新Summary数据
     │
-    └─→ Research Agent (isolated, 每天23:00)
-        └─→ 从Summary获取数据 → 分析热门主题/关键词 → 生成查询词 → 互联网搜索 → 生成Reports
+    └─→ Research Agent (每天23:00)
+        └─→ 获取热门主题/关键词 → 生成查询词 → 互联网搜索 → 生成Reports
 ```
 
 ### Knowledge Agent 工作流
@@ -240,7 +289,7 @@ npm run agent:knowledge
 ```
 
 **自动完成**：
-1. 读取未处理的对话历史
+1. 读取未处理的对话历史（从 `~/.openclaw/agents/main/sessions/*.jsonl`）
 2. 调用大模型生成摘要和关键词
 3. 智能聚类到主题和领域
 4. 转换为Markdown（Notes和Logs）
@@ -290,48 +339,10 @@ npm run agent:research
 - 使用搜索工具查找资料（Google、GitHub、HN）
 - 生成研究报告保存到 `content/reports/`
 
-### 创建定时任务
-
-**第一步：查找项目路径**
+### 管理定时任务
 
 ```bash
-# 常见安装位置（按优先级检查）
-ls -la ~/openclaw/workspace/openclaw-second-brain 2>/dev/null || \
-ls -la /root/openclaw-second-brain 2>/dev/null || \
-ls -la ~/openclaw-second-brain 2>/dev/null || \
-find ~ -type d -name "openclaw-second-brain" 2>/dev/null | head -1
-```
-
-**第二步：创建任务（替换 `<PROJECT_PATH>` 为实际路径）**
-
-```bash
-# Knowledge Agent - 每小时同步一次
-openclaw cron add \
-  --name "Knowledge Sync" \
-  --cron "0 * * * *" \
-  --session isolated \
-  --message "cd <PROJECT_PATH> && npm run agent:knowledge" \
-  --delivery none
-
-# Research Agent - 每晚23:00研究
-openclaw cron add \
-  --name "Daily Research" \
-  --cron "0 23 * * *" \
-  --tz "Asia/Shanghai" \
-  --session isolated \
-  --message "cd <PROJECT_PATH> && npm run agent:research" \
-  --delivery none
-```
-
-**常见路径示例**：
-- `~/openclaw/workspace/openclaw-second-brain`
-- `/root/openclaw-second-brain`
-- `~/openclaw-second-brain`
-
-### 查看Agent执行历史
-
-```bash
-# 列出所有任务
+# 查看任务列表
 openclaw cron list
 
 # 查看执行历史
@@ -339,7 +350,31 @@ openclaw cron runs --name "Knowledge Sync" --limit 10
 
 # 手动触发
 openclaw cron run --name "Knowledge Sync"
+
+# 禁用/启用任务
+openclaw cron edit <job-id> --enabled false
+openclaw cron edit <job-id> --enabled true
+
+# 删除任务
+openclaw cron remove <job-id>
 ```
+
+### 重要说明
+
+**为什么使用 isolated 会话？**
+- 每个任务在独立的 `cron:<jobId>` 会话中运行
+- 子Agent只看到自己的SKILL.md，不会被主会话干扰
+- 防止误操作，不会创建额外的定时任务
+
+**为什么使用 delivery none？**
+- 这些是后台任务，不需要主动通知用户
+- 避免每次执行都发送消息
+- 结果保存到文件系统，用户可以随时查看
+
+**无需Web服务器**
+- Knowledge Agent和Research Agent都直接调用lib模块
+- 不依赖API服务器运行
+- 更快的执行速度，更少的依赖
 
 ---
 
