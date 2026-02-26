@@ -76,21 +76,17 @@ npm run dev
 
 ### ⚠️ 常见问题
 
-如果遇到以下问题，请查看 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)：
-
-- ❌ 系统只创建简单日志，没有真正的知识提取
-- ❌ 环境变量在定时任务中不生效
-- ❌ TypeScript导入错误
-- ❌ 端口冲突（3000 vs 3001）
-- ❌ 对话文件读取失败
-
-**快速诊断**：
+**环境变量未设置**：
 ```bash
-# 运行诊断脚本
-curl -O https://raw.githubusercontent.com/yourusername/openclaw-second-brain/master/diagnose.sh
-chmod +x diagnose.sh
-./diagnose.sh
+export OPENAI_API_KEY="your-api-key"
+export OPENAI_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
 ```
+
+**端口冲突**：确保使用3000端口，不是3001
+
+**构建缓存问题**：`rm -rf .next && npm run dev`
+
+**对话文件读取失败**：检查路径 `~/.openclaw/agents/main/sessions/`
 
 ### 生产部署
 
@@ -464,11 +460,9 @@ npm run summary:init
 # 2. 启动服务器
 npm run dev
 
-# 3. 执行完整数据管道（一键完成所有步骤）
+# 3. 执行完整数据管道
 npm run summary:pipeline
 ```
-
-详细文档请查看 [DATA_PIPELINE.md](./DATA_PIPELINE.md)
 
 ### 系统架构
 
