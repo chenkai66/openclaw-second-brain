@@ -10,6 +10,23 @@ cd "$PROJECT_DIR"
 
 echo "🚀 Starting Second Brain System..."
 
+# 检查环境变量（用于 OpenClaw Claude 模型）
+if [ -z "$ANTHROPIC_API_KEY" ]; then
+    echo "⚠️  ANTHROPIC_API_KEY not set, trying to load from ~/.zshrc"
+    if [ -f ~/.zshrc ]; then
+        source ~/.zshrc
+    fi
+fi
+
+# 检查 dashscope-proxy
+echo "🔌 Checking dashscope-proxy..."
+if ps aux | grep -v grep | grep dashscope-proxy > /dev/null 2>&1; then
+    echo "✅ dashscope-proxy is running"
+else
+    echo "⚠️  dashscope-proxy not running"
+    echo "   OpenClaw will fall back to other configured models"
+fi
+
 # 检查 OpenClaw Gateway
 echo "📡 Checking OpenClaw Gateway..."
 if openclaw health > /dev/null 2>&1; then
