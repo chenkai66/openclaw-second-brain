@@ -19,7 +19,8 @@
     "summary:stats": "curl http://localhost:3000/api/summary/stats | jq .",
     "summary:tree": "curl http://localhost:3000/api/summary/tree | jq .",
     "agent:knowledge": "node skills/knowledge-agent-skill/scripts/run-knowledge-sync.js",
-    "agent:research": "node skills/research-agent-skill/scripts/run-daily-research.js"
+    "agent:research": "node skills/research-agent-skill/scripts/run-daily-research.js",
+    "agent:knowledge:enhanced": "node scripts/enhanced-knowledge-sync.mjs"
   },
   "dependencies": {
     "@types/react-syntax-highlighter": "^15.5.13",

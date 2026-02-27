@@ -55,4 +55,20 @@ next-env.d.ts
 .agent-workspace/knowledge-agent/
 .agent-workspace/research-agent/
 .agent-workspace/social-research/
-!.agent-workspace/README.md
+!.agent-workspace/README.mdscripts/openclaw-tui.sh
+
+# OpenClaw 配置和认证文件（包含 API Keys）
+.openclaw/
+**/auth-profiles.json
+**/.openclaw/
+scripts/openclaw-tui.sh
+
+# 环境变量和密钥
+.env
+.env.local
+*.key
+*.pem
+
+# OpenClaw 启动脚本（包含 API Keys）
+scripts/openclaw-tui*.sh
+scripts/*-with-keys.sh

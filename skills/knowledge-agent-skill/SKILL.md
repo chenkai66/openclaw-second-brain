@@ -53,17 +53,35 @@ npm run agent:knowledge
 
 这个脚本会自动完成：
 1. **初始化系统** - 验证配置，确保目录存在
-2. **处理对话** - 读取未处理的对话，生成摘要，智能分类
-3. **转换Markdown** - 创建/更新Notes和Logs文件
-4. **创建备份** - 自动备份数据
-5. **统计分析** - 返回完整的系统统计
-6. **返回结果** - 结构化JSON供Agent使用
+2. **检索 Claude Code 对话** - 自动发现和解析 Claude Code 会话文件
+3. **统一格式转换** - 将 Claude Code 对话转换为 OpenClaw 格式
+4. **处理对话** - 读取未处理的对话（OpenClaw + Claude Code），生成摘要，智能分类
+5. **转换Markdown** - 创建/更新Notes和Logs文件
+6. **创建备份** - 自动备份数据
+7. **统计分析** - 返回完整的系统统计
+8. **返回结果** - 结构化JSON供Agent使用
+
+## 对话来源
+
+系统自动处理两个来源的对话：
+
+1. **OpenClaw TUI 对话**
+   - 路径: `~/.openclaw/agents/main/sessions/*.jsonl`
+   - 格式: OpenClaw 原生格式
+   - 自动发现: ✅
+
+2. **Claude Code 对话**
+   - 路径: `~/.claude/projects/*/xxx.jsonl`
+   - 格式: Claude Code 格式（自动转换）
+   - 自动发现: ✅
+   - 去重机制: ✅ (追踪已处理的会话)
 
 ## 输出位置
 
-- **笔记**: `content/notes/` - 知识文档
-- **日志**: `content/logs/` - 对话记录
+- **笔记**: `content/notes/` - 知识文档 (来自两种对话源)
+- **日志**: `content/logs/` - 对话记录 (来自两种对话源)
 - **摘要数据**: `data/summaries/` - JSON格式
+- **处理记录**: `~/.openclaw/workspace/memory/processed-claude-code-sessions.json` - 已处理的 Claude Code 会话
 
 ## 执行结果
 
