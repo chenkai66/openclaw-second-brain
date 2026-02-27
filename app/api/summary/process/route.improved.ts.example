@@ -1,0 +1,110 @@
+/**
+ * 改进版 API: 处理新对话
+ * POST /api/summary/process
+ *
+ * 改进点：
+ * - 使用统一的错误处理
+ * - 请求体验证
+ * - 超时控制
+ * - 日志记录
+ * - 重试机制
+ */
+
+import { NextRequest } from 'next/server';
+import {
+  apiHandler,
+  validateRequestBody,
+  withTimeout,
+  successResponse,
+  AppError,
+  validators,
+} from '@/lib/api-utils';
+import { conversationProcessor } from '@/lib/summary/conversation-processor';
+import { summaryStorage } from '@/lib/summary/summary-storage';
+
+// API 超时设置（60秒）
+const API_TIMEOUT = 60000;
+
+/**
+ * POST 处理函数
+ */
+export const POST = apiHandler(async (request: NextRequest) => {
+  // 解析请求体
+  const body = await request.json();
+
+  // 验证请求体
+  validateRequestBody(body, {
+    force_reprocess: {
+      required: false,
+      type: 'boolean',
+    },
+    batch_size: {
+      required: false,
+      type: 'number',
+      validator: validators.inRange(1, 100),
+    },
+    conversation_ids: {
+      required: false,
+      type: 'array',
+    },
+  });
+
+  const { force_reprocess = false, batch_size = 10, conversation_ids } = body;
+
+  // 执行处理（带超时）
+  const result = await withTimeout(
+    (async () => {
+      if (force_reprocess) {
+        // 强制重新处理所有对话
+        return await conversationProcessor.reprocessAll();
+      } else if (conversation_ids && conversation_ids.length > 0) {
+        // 处理指定的对话（暂不支持）
+        throw new AppError(
+          'Processing specific conversations not yet implemented. Use force_reprocess to reprocess all conversations.',
+          'NOT_IMPLEMENTED',
+          501
+        );
+      } else {
+        // 处理未处理的对话
+        return await conversationProcessor.processAll();
+      }
+    })(),
+    API_TIMEOUT,
+    'Processing timed out. Please try again or use force_reprocess=true for full reprocessing.'
+  );
+
+  // 获取处理前后的统计数据
+  const metadata = summaryStorage.loadMetadata();
+  const beforeStats = {
+    topics: metadata.statistics.total_topics,
+    domains: metadata.statistics.total_domains,
+  };
+
+  // 更新统计
+  summaryStorage.updateStatistics();
+  const afterMetadata = summaryStorage.loadMetadata();
+  const afterStats = {
+    topics: afterMetadata.statistics.total_topics,
+    domains: afterMetadata.statistics.total_domains,
+  };
+
+  return successResponse({
+    processed_count: result.processed_count,
+    new_conversations: result.success_count,
+    updated_topics: afterStats.topics - beforeStats.topics,
+    updated_domains: afterStats.domains - beforeStats.domains,
+    errors: result.errors || [],
+    duration_ms: result.duration_ms,
+  });
+});
+
+/**
+ * GET 处理函数 - 获取处理状态
+ */
+export const GET = apiHandler(async () => {
+  const stats = conversationProcessor.getProcessingStats();
+
+  return successResponse({
+    stats,
+  });
+});

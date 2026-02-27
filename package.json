@@ -9,6 +9,7 @@
     "start": "next start",
     "start:8000": "next start -p 8000",
     "lint": "next lint",
+    "health": "node scripts/health-check.js",
     "summary:init": "node scripts/init-summary-system.js",
     "summary:test": "node scripts/test-summary-system.js",
     "summary:test-convert": "node scripts/test-convert-api.js",
