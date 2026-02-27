@@ -1,6 +1,4 @@
-# 🧠 Second Brain
-
-<div align="center">
+# 🧠 OpenClaw Second Brain
 
 **AI-Powered Personal Knowledge Management System**
 
@@ -10,92 +8,122 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 
-</div>
+一个完全自主运行的 AI 知识管理系统，集成了 OpenClaw、Second Brain 和 Claude Code，实现持续学习、记忆管理和自动化工作流。
 
 ---
 
 ## ✨ 核心特性
 
-### 🤖 AI 自动化系统
+### 🧠 分层记忆系统
+- **Layer 1**: 用户偏好（长期）- 个人信息、技术偏好、工作风格
+- **Layer 2**: 决策历史（中期）- 成功/失败的决策、问题解决方案
+- **Layer 3**: 技术知识（短期-中期）- 技术栈、最佳实践、代码示例
+- **Layer 4**: 对话历史（短期）- 所有对话的完整记录
 
-- **Knowledge Agent** - 每小时自动同步对话，智能提取概念和知识点，生成Notes和Logs
-- **Research Agent** - 每晚23:00从summary系统获取热门主题和关键词，自动生成研究查询词，生成个性化研究报告
-- **Social Research** - 并行搜索Reddit和X，捕捉社区真实讨论
+### 🔄 自动知识流动
+```
+当前对话 (Claude Code)
+    ↓ (记录在 git)
+OpenClaw 对话
+    ↓ (每小时自动)
+Second Brain 知识库
+    ↓ (每天凌晨)
+记忆系统更新
+```
+
+### 🤖 多 AI 模型支持
+
+| API 源 | 模型 | 用途 | 状态 |
+|--------|------|------|------|
+| **idealab (默认)** | Claude Sonnet 4.5 | 主力对话模型 | ✅ |
+| idealab | Claude Opus 4.6 | 复杂任务 | ✅ |
+| idealab | Claude Haiku 4.5 | 快速响应 | ✅ |
+| **百炼 API** | qwen-max | 备用强力模型 | ✅ |
+| 百炼 API | qwen3.5-flash | 快速轻量任务 | ✅ |
+| 百炼 API | qwen3.5-122b | 大规模推理 | ✅ |
+
+### ⚡ 自动化任务
+
+| 任务 | 频率 | 功能 |
+|------|------|------|
+| **Knowledge Sync** | 每小时 | 同步对话到知识库 |
+| **Daily Research** | 每天 23:00 | 生成研究报告 |
+| **Memory Update** | 每天凌晨 | 更新记忆文件 |
 
 ### 🔍 智能搜索与导航
-
 - **全文搜索** - 毫秒级响应，实时高亮匹配内容
 - **标签系统** - 多维度分类，快速定位相关内容
 - **知识图谱** - D3.js可视化，探索知识之间的隐藏联系
-
-### ✍️ 强大的编辑体验
-
-- **Markdown编辑器** - 实时预览，语法高亮
-- **代码块增强** - 一键复制，支持30+语言高亮
-- **图片优化** - 自动转换AVIF/WebP，加载速度提升60%
-
-### 📊 数据可视化
-
-```
-📈 知识增长曲线    🏷️ 标签云图    🕸️ 关系网络图
-```
 
 ---
 
 ## 🚀 快速开始
 
-### 前置要求
+### 1. 环境配置
 
-- Node.js 18+ 
-- npm/yarn/pnpm
-- OpenAI兼容的API Key（如阿里云DashScope）
-
-### 安装
+编辑 `~/.zshrc` 添加：
 
 ```bash
-# 克隆仓库
-git clone https://github.com/yourusername/openclaw-second-brain.git
-cd openclaw-second-brain
+# idealab Claude (通过 dashscope-proxy)
+export ANTHROPIC_API_KEY="your-idealab-api-key"
+export ANTHROPIC_BASE_URL="http://127.0.0.1:8080/idealab"
 
-# 安装依赖
-npm install
+# 百炼 API (阿里云)
+export BAILIAN_API_KEY="your-bailian-api-key"
+export BAILIAN_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
 
-# 配置环境变量（重要！）
-export OPENAI_API_KEY="your-api-key-here"
-export OPENAI_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
+# OpenClaw 会话路径
 export OPENCLAW_SESSIONS_PATH="$HOME/.openclaw/agents/main/sessions"
+```
 
-# 初始化系统
-npm run summary:init
+加载配置：
+```bash
+source ~/.zshrc
+```
 
-# 启动开发服务器
+### 2. 安装依赖
+
+```bash
+git clone <your-repo>
+cd openclaw-second-brain
+npm install
+```
+
+### 3. 启动系统
+
+```bash
+# 一键启动（推荐）
+./scripts/start-system.sh
+
+# 或手动启动
 npm run dev
 ```
 
-访问 [http://localhost:3000](http://localhost:3000) 🎉
+### 4. 验证配置
 
-### ⚠️ 常见问题
-
-**环境变量未设置**：
 ```bash
-export OPENAI_API_KEY="your-api-key"
-export OPENAI_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
+# 测试所有 API
+./scripts/test-multi-api.sh
+
+# 查看模型状态
+openclaw models status
+
+# 查看定时任务
+openclaw cron list
 ```
 
-**端口冲突**：确保使用3000端口，不是3001
-
-**构建缓存问题**：`rm -rf .next && npm run dev`
-
-**对话文件读取失败**：检查路径 `~/.openclaw/agents/main/sessions/`
-
-### 生产部署
+### 5. 开始使用
 
 ```bash
-# 构建
-npm run build
+# 使用 OpenClaw TUI（默认 Claude Sonnet 4.5）
+openclaw tui
 
-# 启动生产服务器
-npm start
+# 在对话中切换模型
+/model opus       # Claude Opus 4.6
+/model haiku      # Claude Haiku 4.5
+
+# 访问 Second Brain Web UI
+open http://localhost:3000
 ```
 
 ---
@@ -104,266 +132,106 @@ npm start
 
 ```
 openclaw-second-brain/
-├── 📱 app/                      # Next.js App Router
+├── README.md                    # 本文档
+├── .env.example                 # 环境变量模板
+│
+├── src/app/                     # Next.js 应用
 │   ├── page.tsx                 # 首页（搜索+统计）
 │   ├── notes/[slug]/            # 笔记详情页
 │   ├── logs/[date]/             # 日志详情页
-│   ├── research/[slug]/         # 研究报告页
 │   └── graph/                   # 知识图谱页
 │
-├── 🧩 components/               # React组件
-│   ├── SearchBar.tsx            # 智能搜索框
-│   ├── MarkdownEditor.tsx       # Markdown编辑器
-│   ├── MarkdownRenderer.tsx     # 内容渲染器
-│   └── KnowledgeGraph.tsx       # 知识图谱
+├── lib/                         # 核心逻辑
+│   ├── conversation/            # 对话处理
+│   ├── summary/                 # 知识提取
+│   └── graph/                   # 知识图谱
 │
-├── 📝 content/                  # 内容存储
-│   ├── notes/                   # 结构化笔记
+├── scripts/                     # 自动化脚本
+│   ├── start-system.sh          # 系统启动
+│   ├── test-multi-api.sh        # API 测试
+│   ├── knowledge-sync.sh        # 知识同步
+│   └── update-memory.sh         # 记忆更新
+│
+├── skills/                      # OpenClaw Agent 技能
+│   ├── knowledge-agent-skill/   # 知识同步 Agent
+│   ├── research-agent-skill/    # 研究报告 Agent
+│   └── project-developer-skill/ # 项目开发 Agent
+│
+├── content/                     # 生成的内容
+│   ├── notes/                   # 知识笔记
 │   ├── logs/                    # 对话日志
 │   └── reports/                 # 研究报告
 │
-├── 🤖 skills/                   # AI Agent技能
-│   ├── knowledge-agent-skill/   # 知识同步Agent
-│   ├── research-agent-skill/    # 研究报告Agent
-│   └── social-research-skill/   # 社区研究Skill
-│
-├── 🔧 lib/                      # 工具库
-│   ├── content-manager.ts       # 内容管理
-│   ├── search.ts                # 搜索引擎
-│   └── graph-builder.ts         # 图谱构建
-│
-└── 🎨 public/                   # 静态资源
+└── data/summaries/              # 知识摘要数据
 ```
 
 ---
 
-## 🎯 使用场景
+## 🔧 核心功能详解
 
-### 📚 个人学习
+### 记忆系统
 
-```
-对话 → AI提取 → 结构化笔记 → 知识图谱 → 深度理解
-```
-
-**示例**：学习React性能优化
-1. 与AI讨论React性能问题
-2. Knowledge Agent自动创建笔记
-3. 标签自动分类：`react`, `performance`, `optimization`
-4. 知识图谱显示与其他React笔记的关联
-
-### 🔬 技术研究
-
-```
-对话历史 → Summary系统 → 热门主题/关键词 → Research Agent → 生成查询词 → 多源搜索 → 综合报告
+#### 查看记忆
+```bash
+cat ~/.openclaw/workspace/memory/user-preferences.md
+cat ~/.openclaw/workspace/memory/decision-history.md
+cat ~/.openclaw/workspace/memory/technical-knowledge.md
 ```
 
-**示例**：研究AI编码工具
-1. 频繁讨论Cursor、GitHub Copilot
-2. Summary系统提取热门主题："AI Coding Tools"，关键词：["cursor", "copilot", "ai-coding"]
-3. Research Agent获取数据，生成查询词："Cursor vs GitHub Copilot comparison"
-4. 自动搜索最新文章、GitHub项目、HN讨论
-5. 生成2500字深度报告，包含使用建议
-
-### 💡 内容创作
-
-```
-话题 → Social Research → 社区讨论 → 内容建议 → 创作灵感
+#### 更新记忆
+记忆会自动更新，也可以手动编辑：
+```bash
+vim ~/.openclaw/workspace/memory/decision-history.md
 ```
 
-**示例**：写一篇关于Next.js 14的文章
-1. 搜索"Next.js 14 features"
-2. 并行分析Reddit和X的讨论
-3. 识别热门话题：Server Actions、Partial Prerendering
-4. 生成8个博客标题和5个视频脚本建议
+### 知识同步流程
+
+1. 在 OpenClaw 中对话
+2. 系统每小时自动提取知识
+3. 生成结构化的 Notes 和 Logs
+4. 构建知识图谱
+5. 更新记忆系统
+
+### 模型切换
+
+#### OpenClaw 中切换
+```bash
+# 在对话中使用命令
+/model opus                          # Claude Opus 4.6
+/model anthropic/claude-haiku-4-5    # Claude Haiku 4.5
+/model anthropic/claude-sonnet-4-5   # 切换回默认
+
+# 或通过命令行
+openclaw models set anthropic/claude-opus-4-6
+```
+
+#### 百炼模型使用
+百炼模型通过 API 直接调用（支持 qwen-max、qwen3.5-flash 等）。
 
 ---
 
-## 🛠️ 技术栈
+## 🤖 Agent 自动化
 
-### 前端框架
+### Knowledge Agent
+- **功能**: 自动同步对话到 Second Brain
+- **触发**: 每小时
+- **输出**: Notes、Logs、Summary 数据
 
-- **Next.js 14** - App Router, Server Components, ISR
-- **React 18** - Concurrent Features, Suspense
-- **TypeScript 5** - 类型安全，开发体验
+### Research Agent
+- **功能**: 生成研究报告
+- **触发**: 每晚 23:00
+- **输出**: 研究报告保存到 `content/reports/`
 
-### UI & 样式
-
-- **Tailwind CSS 3** - 原子化CSS，快速开发
-- **Crimson Pro** - 优雅的衬线字体
-- **react-syntax-highlighter** - 代码高亮
-
-### 数据可视化
-
-- **D3.js** - 知识图谱力导向布局
-- **Force Simulation** - 动态交互效果
-
-### 内容处理
-
-- **gray-matter** - Frontmatter解析
-- **react-markdown** - Markdown渲染
-- **remark/rehype** - 内容转换管道
-
----
-
-## ⚡ 性能优化
-
-### 构建优化
-
-```typescript
-// next.config.js
-{
-  images: {
-    formats: ['image/avif', 'image/webp'],  // 图片格式优化
-  },
-  compiler: {
-    removeConsole: true,                     // 移除console
-  },
-  experimental: {
-    optimizePackageImports: ['react-icons'], // 包导入优化
-  }
-}
-```
-
-### 运行时优化
-
-- ✅ **ISR缓存** - 60秒重新验证，减少服务器负载
-- ✅ **代码分割** - 按路由自动分割，首屏加载<100KB
-- ✅ **图片懒加载** - Intersection Observer，节省带宽
-- ✅ **搜索防抖** - 300ms延迟，减少API调用
-
-### 性能指标
-
-```
-Lighthouse Score: 98/100
-First Contentful Paint: 0.8s
-Time to Interactive: 1.2s
-Total Bundle Size: 87KB (gzipped)
-```
-
----
-
-## 🤖 AI Agent 系统
-
-### 自动化部署（主Agent使用）
-
-**你的任务**：为Second Brain系统创建定时任务，实现自动化知识管理和研究。
-
-#### 步骤1：查找项目路径
-
+### Project Developer Agent
+- **功能**: 自主开发项目
+- **触发**: 手动
+- **使用**:
 ```bash
-# 自动查找项目路径
-PROJECT_PATH=$(find ~ -type d -name "openclaw-second-brain" 2>/dev/null | head -1)
-
-# 如果找不到，检查常见位置
-[ -z "$PROJECT_PATH" ] && PROJECT_PATH=$(ls -d ~/openclaw/workspace/openclaw-second-brain 2>/dev/null || \
-  ls -d /root/openclaw-second-brain 2>/dev/null || \
-  ls -d ~/openclaw-second-brain 2>/dev/null)
-
-echo "项目路径: $PROJECT_PATH"
+cd skills/project-developer-skill
+./start-project-dev.sh
 ```
-
-#### 步骤2：创建两个定时任务
-
-```bash
-# 任务1: Knowledge Agent - 每小时同步对话到知识库
-openclaw cron add \
-  --name "Knowledge Sync" \
-  --cron "0 * * * *" \
-  --session isolated \
-  --message "cd $PROJECT_PATH && npm run agent:knowledge" \
-  --delivery none
-
-# 任务2: Research Agent - 每晚23:00生成研究报告
-openclaw cron add \
-  --name "Daily Research" \
-  --cron "0 23 * * *" \
-  --tz "Asia/Shanghai" \
-  --session isolated \
-  --message "cd $PROJECT_PATH && npm run agent:research" \
-  --delivery none
-```
-
-#### 步骤3：验证任务创建
-
-```bash
-# 查看任务列表
-openclaw cron list
-
-# 手动测试
-openclaw cron run --name "Knowledge Sync"
-```
-
-### 架构设计
-
-```
-定时任务调度器
-    ↓
-    ├─→ Knowledge Agent (每小时)
-    │   └─→ 读取对话 → 生成摘要 → 更新Notes/Logs → 更新Summary数据
-    │
-    └─→ Research Agent (每天23:00)
-        └─→ 获取热门主题/关键词 → 生成查询词 → 互联网搜索 → 生成Reports
-```
-
-### Knowledge Agent 工作流
-
-```bash
-npm run agent:knowledge
-```
-
-**自动完成**：
-1. 读取未处理的对话历史（从 `~/.openclaw/agents/main/sessions/*.jsonl`）
-2. 调用大模型生成摘要和关键词
-3. 智能聚类到主题和领域
-4. 转换为Markdown（Notes和Logs）
-5. 更新Summary数据（供Research Agent使用）
-6. 创建自动备份
-
-**输出**：
-- `content/notes/` - 知识笔记
-- `content/logs/` - 对话日志
-- `data/summaries/` - JSON数据（热门主题、关键词统计）
-
-### Research Agent 工作流
-
-```bash
-npm run agent:research
-```
-
-**自动完成**：
-1. 从Summary系统获取热门主题（`getTopTopics()`）
-2. 获取热门关键词（`getTopKeywords()`）
-3. 返回结构化数据供Agent分析
-
-**返回数据示例**：
-```json
-{
-  "top_topics": [
-    {
-      "name": "React Performance",
-      "keywords": ["react", "performance", "optimization"],
-      "conversation_count": 15,
-      "score": 0.85
-    }
-  ],
-  "top_keywords": [
-    { "keyword": "react", "count": 45 },
-    { "keyword": "typescript", "count": 38 }
-  ]
-}
-```
-
-**Agent使用数据**：
-- 选择研究主题（例如："React Performance"）
-- 生成查询词组合：
-  - "React Performance optimization tutorial"
-  - "React performance best practices 2024"
-  - "React hooks performance tips"
-- 使用搜索工具查找资料（Google、GitHub、HN）
-- 生成研究报告保存到 `content/reports/`
 
 ### 管理定时任务
-
 ```bash
 # 查看任务列表
 openclaw cron list
@@ -377,277 +245,135 @@ openclaw cron run --name "Knowledge Sync"
 # 禁用/启用任务
 openclaw cron edit <job-id> --enabled false
 openclaw cron edit <job-id> --enabled true
-
-# 删除任务
-openclaw cron remove <job-id>
 ```
-
-### 重要说明
-
-**为什么使用 isolated 会话？**
-- 每个任务在独立的 `cron:<jobId>` 会话中运行
-- 子Agent只看到自己的SKILL.md，不会被主会话干扰
-- 防止误操作，不会创建额外的定时任务
-
-**为什么使用 delivery none？**
-- 这些是后台任务，不需要主动通知用户
-- 避免每次执行都发送消息
-- 结果保存到文件系统，用户可以随时查看
-
-**无需Web服务器**
-- Knowledge Agent和Research Agent都直接调用lib模块
-- 不依赖API服务器运行
-- 更快的执行速度，更少的依赖
 
 ---
 
-## 📝 对话总结系统
+## 📊 监控和调试
 
-### OpenClaw 对话存储格式
-
-#### 存储路径结构
-```
-~/.openclaw/agents/main/sessions/
-├── {session-id}.jsonl          # 会话文件
-├── {session-id}.jsonl.lock     # 锁文件（写入中）
-└── ...
-```
-
-#### 文件格式说明
-- **格式**: JSONL (JSON Lines) - 每行一个独立的JSON对象
-- **编码**: UTF-8
-- **特点**: 流式可读，增量处理友好
-
-#### 记录类型
-| 类型 | 说明 |
-|------|------|
-| `session` | 会话元数据（ID、时间戳、工作目录） |
-| `message` | 用户/助手消息 |
-| `toolCall` | 工具调用 |
-| `toolResult` | 工具执行结果 |
-| `model_change` | 模型切换 |
-
-#### 示例结构
-```json
-// 会话元数据
-{"type":"session","version":3,"id":"065ce98c-195e-4aef-a753-ab22ffb13f67","timestamp":"2026-02-26T03:35:19.545Z","cwd":"/home/admin/openclaw/workspace"}
-
-// 用户消息
-{"type":"message","id":"3b4be693","parentId":"e684b5ab","timestamp":"2026-02-26T03:36:13.617Z","message":{"role":"user","content":[{"type":"text","text":"clone这个仓库"}]}}
-
-// 助手消息（包含工具调用）
-{"type":"message","id":"4565cc7c","parentId":"3b4be693","timestamp":"2026-02-26T03:36:16.564Z","message":{"role":"assistant","content":[{"type":"text","text":"我来帮你克隆："},{"type":"toolCall","id":"call_xxx","name":"exec","arguments":{"command":"git clone ..."}}]}}
-
-// 工具执行结果
-{"type":"message","id":"94b67541","parentId":"4565cc7c","timestamp":"2026-02-26T03:36:18.753Z","message":{"role":"toolResult","toolCallId":"call_xxx","toolName":"exec","content":[{"type":"text","text":"Cloning into..."}]}}
-```
-
-#### 处理逻辑
-系统会：
-1. 读取所有 `.jsonl` 文件（跳过 `.lock` 文件）
-2. 逐行解析JSON记录
-3. 提取 `type: "message"` 且 `role: "user"` 或 `"assistant"` 的消息
-4. 忽略工具调用的中间步骤
-5. 组装成完整对话文本
-6. 过滤太短的对话（< 50字符）
-
-### 快速开始
-
+### 查看日志
 ```bash
-# 1. 初始化系统
-npm run summary:init
+# Gateway 日志
+tail -f ~/.openclaw/logs/gateway.log
 
-# 2. 启动服务器
-npm run dev
+# Next.js 日志
+tail -f ~/.openclaw/logs/nextjs-dev.log
 
-# 3. 执行完整数据管道
-npm run summary:pipeline
+# Agent 日志
+ls -lt ~/Desktop/Project/openclaw/openclaw-second-brain/agent-logs/
 ```
 
-### 系统架构
-
-```
-对话数据源 → 对话处理器 → 多阶段摘要 → Markdown转换 → 前端展示
-    ↓           ↓              ↓          ↓
-OpenClaw    LLM生成摘要    三层树形结构   JSON文件
-会话目录    智能聚类       Domain/Topic   索引加速
-           试错重试       /Conversation   备份恢复
-```
-
-### 核心功能
-
-**智能合并策略** - 使用大模型判断对话归属：
-- **Merge（合并）** - 融入现有笔记，智能整合内容
-- **Create New（新建）** - 创建独立的新笔记
-- **Create Log Only（仅日志）** - 只记录简短对话
-
-**鲁棒性增强**：
-- ✅ 自动摘要生成 - 调用大模型生成摘要、提取关键词、分析情感
-- ✅ 智能聚类 - 自动将相似对话聚合为主题，将相似主题聚合为领域
-- ✅ 多阶段摘要 - 三层树形结构（领域 → 主题 → 对话），每层都有独立摘要
-- ✅ 错误处理 - 自动重试3次、指数退避、降级处理、详细日志
-- ✅ 防重复处理 - 跟踪已处理对话ID、断点续传
-- ✅ 数据验证 - 格式、必需字段、类型检查
-- ✅ 文件名安全 - 清理非法字符、防冲突
-
-### 快速使用
-
-```typescript
-// 1. 初始化系统
-import { initializeSummarySystem, quickProcess } from '@/lib/summary';
-await initializeSummarySystem();
-
-// 2. 处理对话
-const result = await quickProcess();
-console.log(`处理了 ${result.processed} 个对话`);
-
-// 3. 搜索
-import { quickSearch } from '@/lib/summary';
-const results = await quickSearch('React hooks', { searchType: 'hybrid' });
-```
-
-### API接口
-
+### 系统状态
 ```bash
-# 处理新对话
-POST /api/summary/process
+# OpenClaw 状态
+openclaw health
 
-# 智能转换为Markdown
-POST /api/summary/convert
+# 模型配置
+openclaw models status
 
-# 搜索摘要（支持关键词/语义/混合搜索）
-POST /api/summary/search
-
-# 获取摘要树（三层结构）
-GET /api/summary/tree?depth=3
-
-# 获取统计信息
-GET /api/summary/stats
-
-# 智能推荐
-GET /api/summary/recommend?conversation_id=xxx
-
-# 触发聚类
-POST /api/summary/cluster
-
-# 获取对话详情
-GET /api/summary/conversation/[id]
-
-# 重建索引
-POST /api/summary/rebuild-index
-```
-
-### 配置文件
-
-编辑 `summary-config.json`：
-
-```json
-{
-  "llm": {
-    "model": "qwen3-max-2026-01-23",
-    "max_retries": 3,
-    "temperature": 0.7
-  },
-  "processing": {
-    "batch_size": 10,
-    "max_concurrent": 3,
-    "min_conversation_length": 50
-  },
-  "clustering": {
-    "similarity_threshold": 0.7,
-    "min_cluster_size": 3
-  },
-  "intelligent_merger": {
-    "min_conversation_length_for_note": 200,
-    "min_keyword_count": 3,
-    "strict_mode": true,
-    "max_content_length": 3000,
-    "max_keywords": 10
-  }
-}
-```
-
-**智能合并配置说明**：
-- `min_conversation_length_for_note`: 创建笔记的最小对话长度（字符数）
-- `min_keyword_count`: 创建笔记需要的最少关键词数量
-- `strict_mode`: 严格模式，更保守地创建笔记
-- 大部分日常对话会被标记为 `create_log_only`，只保存到日志
-- 只有真正有价值的知识才会创建笔记
-
-### 数据结构
-
-```
-data/summaries/
-├── summaries.json          # 树形摘要结构
-├── summary-index.json      # 快速检索索引
-├── summary-metadata.json   # 元数据和统计
-└── backups/                # 自动备份
+# Second Brain API
+curl http://localhost:3000/api/summary/stats | jq .
 ```
 
 ---
 
-## 🚧 开发路线图
+## ⚠️ 注意事项
 
-### v1.0 (当前版本)
-- [x] 基础笔记和日志管理
-- [x] 全文搜索和标签系统
-- [x] 知识图谱可视化
-- [x] AI自动化Agent系统
-- [x] 对话总结与多阶段摘要系统
+### API Key 安全
+- ✅ 使用环境变量存储 API Key
+- ✅ `.env` 已添加到 `.gitignore`
+- ❌ **永远不要**将 API Key 提交到 Git
+- ❌ **永远不要**硬编码 API Key
 
-### v1.1 (计划中)
-- [ ] 多语言支持（英文/中文切换）
-- [ ] 暗色模式优化
-- [ ] 移动端适配
-- [ ] PWA支持（离线访问）
+### dashscope-proxy 依赖
+idealab Claude 模型需要 dashscope-proxy 运行：
+```bash
+# 检查代理状态
+ps aux | grep dashscope-proxy
 
-### v2.0 (未来)
-- [ ] 多用户协作
-- [ ] 实时同步
-- [ ] 插件系统
-- [ ] AI对话界面
+# 如未运行，启动代理
+./dashscope-proxy
+```
+
+### 环境变量生效
+新终端需要重新加载：
+```bash
+source ~/.zshrc
+```
 
 ---
 
-## 🤝 贡献指南
+## 🎊 成功标志
 
-欢迎贡献！请遵循以下步骤：
+系统正常运行的标志：
 
-1. Fork本仓库
+- ✅ `openclaw models list` 显示所有模型认证为 "yes"
+- ✅ `./scripts/test-multi-api.sh` 所有测试通过
+- ✅ `openclaw cron list` 显示 3 个定时任务
+- ✅ Second Brain UI 可访问 http://localhost:3000
+- ✅ 对话越来越个性化，AI 记住你的偏好
+- ✅ 知识自动积累，图谱越来越丰富
+
+---
+
+## 🔄 日常维护
+
+### 每天（自动）
+- ✅ 知识同步 (每小时)
+- ✅ 记忆更新 (凌晨)
+- ✅ 研究报告 (23:00)
+
+### 每周（手动）
+```bash
+# 检查系统状态
+./scripts/start-system.sh
+
+# 查看生成的内容
+ls -la agent-logs/ content/notes/
+
+# 更新决策历史（如有重要决策）
+vim ~/.openclaw/workspace/memory/decision-history.md
+
+# 备份重要数据
+tar -czf backup-$(date +%Y%m%d).tar.gz \
+  ~/.openclaw/workspace/memory data/
+```
+
+---
+
+## 🛠️ 技术栈
+
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Node.js
+- **AI Models**: Claude 4.5/4.6, Qwen Max/3.5
+- **Data**: Markdown, JSONL, File-based storage
+- **Automation**: OpenClaw Gateway, Cron jobs
+- **Search**: Full-text search, Knowledge graph
+- **Visualization**: D3.js force-directed graph
+
+---
+
+## 🤝 贡献
+
+欢迎贡献代码和建议！请遵循以下步骤：
+
+1. Fork 本仓库
 2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
 3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启Pull Request
-
-### 代码规范
-
-- 使用TypeScript严格模式
-- 遵循ESLint规则
-- 组件使用函数式+Hooks
-- 提交信息遵循[Conventional Commits](https://www.conventionalcommits.org/)
+5. 开启 Pull Request
 
 ---
 
-## 🙏 致谢
+## 📄 License
 
-- [Next.js](https://nextjs.org/) - 强大的React框架
-- [Tailwind CSS](https://tailwindcss.com/) - 优雅的CSS框架
-- [D3.js](https://d3js.org/) - 数据可视化库
-- [OpenClaw](https://openclaw.ai/) - AI Agent基础设施
+MIT
 
 ---
 
-## 📮 联系方式
-
-- **Email**: chenkai.nb.666@gmail.com
-- **微信**: ck1640234528
-
----
-
-<div align="center">
-
-**⭐ 如果这个项目对你有帮助，请给一个Star！**
+**最后更新**: 2026-02-27
+**版本**: 2.0
+**配置者**: Claude Code + OpenClaw
+**状态**: ✅ 生产就绪
 
 Made with ❤️ by ChenKai
-
-</div>
