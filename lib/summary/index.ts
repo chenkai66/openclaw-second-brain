@@ -41,7 +41,7 @@ export * from './utils';
  */
 export async function initializeSummarySystem(configPath?: string): Promise<void> {
   const { configManager } = await import('./config');
-  
+
   if (configPath) {
     // 加载自定义配置
     const config = new (await import('./config')).ConfigManager(configPath);
@@ -91,7 +91,7 @@ export async function quickSearch(
   }
 ) {
   const { summaryRetriever } = await import('./summary-retriever');
-  
+
   return await summaryRetriever.search({
     query,
     search_type: options?.searchType || 'hybrid',
