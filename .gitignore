@@ -72,3 +72,12 @@ scripts/openclaw-tui.sh
 # OpenClaw 启动脚本（包含 API Keys）
 scripts/openclaw-tui*.sh
 scripts/*-with-keys.sh
+
+# LaunchAgent 配置（包含 API Keys）
+**/ai.openclaw.gateway.plist
+Library/LaunchAgents/ai.openclaw.gateway.plist
+
+# 测试脚本（包含 API Keys）
+test-anthropic-sdk.js
+scripts/start-gateway-with-env.sh
+scripts/init-openclaw.sh

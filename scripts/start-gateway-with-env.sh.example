@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# OpenClaw Gateway 启动脚本（带环境变量）
+# 用于在前台运行 Gateway，确保环境变量可用
+#
+# 使用方法：
+# 1. 复制此文件为 start-gateway-with-env.sh
+# 2. 替换下面的 API Keys 为真实值
+# 3. 确保 dashscope-proxy 已在端口 8080 上运行
+# 4. 运行: bash scripts/start-gateway-with-env.sh
+#
+# 重要提示：
+# - 此脚本使用与 Claude Code 相同的代理配置
+# - 代理地址：http://127.0.0.1:8080/idealab
+# - 需要先启动 dashscope-proxy 代理服务（端口 8080）
+# - 不要将包含真实 API Keys 的文件提交到 git
+
+export ANTHROPIC_API_KEY="YOUR_IDEALAB_API_KEY_HERE"
+export ANTHROPIC_BASE_URL="http://127.0.0.1:8080/idealab"
+export BAILIAN_API_KEY="YOUR_BAILIAN_API_KEY_HERE"
+export BAILIAN_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
+export OPENAI_API_KEY="YOUR_OPENAI_API_KEY_HERE"
+
+echo "🚀 Starting OpenClaw Gateway with environment variables..."
+echo "   ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:0:20}..."
+echo "   ANTHROPIC_BASE_URL: $ANTHROPIC_BASE_URL"
+echo ""
+echo "📝 确保 dashscope-proxy 已在端口 8080 上运行"
+echo ""
+
+# 运行 Gateway
+openclaw gateway
