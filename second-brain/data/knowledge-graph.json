@@ -1,6 +1,244 @@
 {
-  "nodes": [],
-  "edges": [],
-  "lastUpdated": "2026-02-20T13:46:00+08:00",
-  "version": "1.0"
+  "nodes": [
+    {
+      "id": "second-brain",
+      "type": "topic",
+      "name": "Second Brain",
+      "description": "Knowledge management system for intelligent synchronization",
+      "occurrence_count": 31,
+      "related_topics": ["knowledge-management", "intelligent-sync", "automation"]
+    },
+    {
+      "id": "cron-jobs",
+      "type": "topic", 
+      "name": "Cron Jobs",
+      "description": "Scheduled automated tasks for system maintenance",
+      "occurrence_count": 31,
+      "related_topics": ["scheduled-task", "system-maintenance", "automation"]
+    },
+    {
+      "id": "intelligent-sync",
+      "type": "topic",
+      "name": "Intelligent Sync",
+      "description": "Automated data synchronization with intelligent processing",
+      "occurrence_count": 31,
+      "related_topics": ["second-brain", "knowledge-management", "automation"]
+    },
+    {
+      "id": "knowledge-management",
+      "type": "topic",
+      "name": "Knowledge Management",
+      "description": "Systematic organization and retrieval of information",
+      "occurrence_count": 31,
+      "related_topics": ["second-brain", "intelligent-sync", "system-maintenance"]
+    },
+    {
+      "id": "system-maintenance",
+      "type": "topic",
+      "name": "System Maintenance",
+      "description": "Regular health checks and system upkeep",
+      "occurrence_count": 31,
+      "related_topics": ["cron-jobs", "knowledge-management", "scheduled-task"]
+    },
+    {
+      "id": "automation",
+      "type": "topic",
+      "name": "Automation",
+      "description": "Automated processes for efficiency and consistency",
+      "occurrence_count": 31,
+      "related_topics": ["cron-jobs", "second-brain", "intelligent-sync"]
+    },
+    {
+      "id": "scheduled-task",
+      "type": "topic",
+      "name": "Scheduled Task",
+      "description": "Time-based automated execution of processes",
+      "occurrence_count": 31,
+      "related_topics": ["cron-jobs", "system-maintenance", "automation"]
+    }
+  ],
+  "edges": [
+    {"source": "second-brain", "target": "knowledge-management", "weight": 1.0},
+    {"source": "second-brain", "target": "intelligent-sync", "weight": 1.0},
+    {"source": "second-brain", "target": "automation", "weight": 0.8},
+    {"source": "cron-jobs", "target": "scheduled-task", "weight": 1.0},
+    {"source": "cron-jobs", "target": "system-maintenance", "weight": 1.0},
+    {"source": "cron-jobs", "target": "automation", "weight": 0.9},
+    {"source": "intelligent-sync", "target": "knowledge-management", "weight": 0.9},
+    {"source": "intelligent-sync", "target": "automation", "weight": 0.8},
+    {"source": "knowledge-management", "target": "system-maintenance", "weight": 0.7},
+    {"source": "system-maintenance", "target": "scheduled-task", "weight": 0.8}
+  ],
+  "entries": [
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb27",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772226900000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-0632",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772259120000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-0839",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772267940000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-1048",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772247022867
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-1156",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772273760000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-1436",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772281360000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-1512",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772289120000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-1549",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772291340000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-1627",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772292420000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-1942",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772279017179
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-2051",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772283202860
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-2130",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772285400000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-2205",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772287500000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-feb28-2317",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772291020000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar01-0100",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772326800000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar01-0756",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772351760000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar01-0908",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772358480000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar01-0948",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772358480000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar01-1156",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772369760000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar01-1413",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772374380000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar01-1556",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772380160000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar02-0142",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772389320000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar02-0220",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772391600000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar02-0533",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772400963090
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar02-0638",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772404680000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar02-1022",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772418120000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar02-1205",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772431500000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar02-2348",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772466480000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar03-1021",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772504460000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar07-1233",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772857980000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar07-1345",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772862300000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar07-1628",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772872080000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar07-2219",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
+      "timestamp": 1772885940000
+    }
+  ],
+  "lastUpdated": "2026-03-07T22:19:00+08:00",
+  "version": "1.0",
+  "total_nodes": 7,
+  "total_edges": 10,
+  "total_entries": 32
 }
