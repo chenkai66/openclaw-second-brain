@@ -5,69 +5,84 @@
       "type": "topic",
       "name": "Second Brain",
       "description": "Knowledge management system for intelligent synchronization",
-      "occurrence_count": 31,
-      "related_topics": ["knowledge-management", "intelligent-sync", "automation"]
+      "occurrence_count": 37,
+      "related_topics": ["knowledge-management", "intelligent-sync", "automation", "english-mode"]
     },
     {
       "id": "cron-jobs",
       "type": "topic", 
       "name": "Cron Jobs",
       "description": "Scheduled automated tasks for system maintenance",
-      "occurrence_count": 31,
-      "related_topics": ["scheduled-task", "system-maintenance", "automation"]
+      "occurrence_count": 37,
+      "related_topics": ["scheduled-task", "system-maintenance", "automation", "english-mode"]
     },
     {
       "id": "intelligent-sync",
       "type": "topic",
       "name": "Intelligent Sync",
       "description": "Automated data synchronization with intelligent processing",
-      "occurrence_count": 31,
-      "related_topics": ["second-brain", "knowledge-management", "automation"]
+      "occurrence_count": 37,
+      "related_topics": ["second-brain", "knowledge-management", "automation", "english-mode"]
     },
     {
       "id": "knowledge-management",
       "type": "topic",
       "name": "Knowledge Management",
       "description": "Systematic organization and retrieval of information",
-      "occurrence_count": 31,
-      "related_topics": ["second-brain", "intelligent-sync", "system-maintenance"]
+      "occurrence_count": 37,
+      "related_topics": ["second-brain", "intelligent-sync", "system-maintenance", "english-mode"]
     },
     {
       "id": "system-maintenance",
       "type": "topic",
       "name": "System Maintenance",
       "description": "Regular health checks and system upkeep",
-      "occurrence_count": 31,
-      "related_topics": ["cron-jobs", "knowledge-management", "scheduled-task"]
+      "occurrence_count": 37,
+      "related_topics": ["cron-jobs", "knowledge-management", "scheduled-task", "english-mode"]
     },
     {
       "id": "automation",
       "type": "topic",
       "name": "Automation",
       "description": "Automated processes for efficiency and consistency",
-      "occurrence_count": 31,
-      "related_topics": ["cron-jobs", "second-brain", "intelligent-sync"]
+      "occurrence_count": 37,
+      "related_topics": ["cron-jobs", "second-brain", "intelligent-sync", "english-mode"]
     },
     {
       "id": "scheduled-task",
       "type": "topic",
       "name": "Scheduled Task",
       "description": "Time-based automated execution of processes",
-      "occurrence_count": 31,
-      "related_topics": ["cron-jobs", "system-maintenance", "automation"]
+      "occurrence_count": 37,
+      "related_topics": ["cron-jobs", "system-maintenance", "automation", "english-mode"]
+    },
+    {
+      "id": "english-mode",
+      "type": "topic",
+      "name": "English Mode",
+      "description": "Content generation and processing in English language only",
+      "occurrence_count": 4,
+      "related_topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"]
     }
   ],
   "edges": [
     {"source": "second-brain", "target": "knowledge-management", "weight": 1.0},
     {"source": "second-brain", "target": "intelligent-sync", "weight": 1.0},
     {"source": "second-brain", "target": "automation", "weight": 0.8},
+    {"source": "second-brain", "target": "english-mode", "weight": 0.9},
     {"source": "cron-jobs", "target": "scheduled-task", "weight": 1.0},
     {"source": "cron-jobs", "target": "system-maintenance", "weight": 1.0},
     {"source": "cron-jobs", "target": "automation", "weight": 0.9},
+    {"source": "cron-jobs", "target": "english-mode", "weight": 0.9},
     {"source": "intelligent-sync", "target": "knowledge-management", "weight": 0.9},
     {"source": "intelligent-sync", "target": "automation", "weight": 0.8},
+    {"source": "intelligent-sync", "target": "english-mode", "weight": 0.9},
     {"source": "knowledge-management", "target": "system-maintenance", "weight": 0.7},
-    {"source": "system-maintenance", "target": "scheduled-task", "weight": 0.8}
+    {"source": "knowledge-management", "target": "english-mode", "weight": 0.8},
+    {"source": "system-maintenance", "target": "scheduled-task", "weight": 0.8},
+    {"source": "system-maintenance", "target": "english-mode", "weight": 0.8},
+    {"source": "automation", "target": "english-mode", "weight": 0.8},
+    {"source": "scheduled-task", "target": "english-mode", "weight": 0.8}
   ],
   "entries": [
     {
@@ -234,11 +249,31 @@
       "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar07-2219",
       "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task"],
       "timestamp": 1772885940000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar08-1817",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task", "english-mode"],
+      "timestamp": 1772964420000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar09-2221",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task", "english-mode"],
+      "timestamp": 1773152860000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar10-0238",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task", "english-mode"],
+      "timestamp": 1773254280000
+    },
+    {
+      "id": "854afde9-d271-4e97-8489-5784ad84bde4-mar10-1213",
+      "topics": ["second-brain", "cron-jobs", "intelligent-sync", "knowledge-management", "system-maintenance", "automation", "scheduled-task", "english-mode"],
+      "timestamp": 1773288780000
     }
   ],
-  "lastUpdated": "2026-03-07T22:19:00+08:00",
+  "lastUpdated": "2026-03-10T12:13:00+08:00",
   "version": "1.0",
-  "total_nodes": 7,
-  "total_edges": 10,
-  "total_entries": 32
+  "total_nodes": 8,
+  "total_edges": 17,
+  "total_entries": 37
 }
